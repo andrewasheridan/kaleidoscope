@@ -33,3 +33,6 @@ After selection a dashboard is unveiled to track progress, upon completion the d
 
 ### Limitations / Trade-offs / Future Considerations
 One difficulty will be to balance the cost of computation with processing time. 
+
+### Dependencies
+`opencv` `conda install -c conda-forge opencv`
