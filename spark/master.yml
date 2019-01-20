@@ -1,0 +1,10 @@
+purchase_type: on_demand
+subnet_id: subnet-0eda36559e1727249
+num_instances: 1
+key_name: Andrew-Sheridan-IAM-keypair
+security_group_ids: sg-085dd5f7331166c44
+instance_type: m4.large
+tag_name: chainsaw-spark
+vol_size: 100
+role: master
+use_eips: true
