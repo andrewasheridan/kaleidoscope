@@ -15,4 +15,4 @@ destination_dir = 'images/' # make sure this has the slash at the end
 os.makedirs(os.path.dirname(destination_dir), exist_ok=True)
 bucket.download_file(origin_filename, destination_dir + destination_filename)
 
-print(glob.glob('*/images/*'))
+print(glob.glob('images/*'))
