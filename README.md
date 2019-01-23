@@ -35,4 +35,5 @@ After selection a dashboard is unveiled to track progress, upon completion the d
 One difficulty will be to balance the cost of computation with processing time. 
 
 ### Dependencies
-`opencv` `conda install -c conda-forge opencv`
+`cv2` `conda install -c conda-forge opencv`
+`boto` `conda install -c conda-forge boto3`
