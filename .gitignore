@@ -1,2 +1,5 @@
 # ignore iPython notebook checkpoints
 *.ipynb_checkpoints
+
+# ignore OSX Folder settings
+.DS_Store
