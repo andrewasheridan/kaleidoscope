@@ -10,20 +10,20 @@ from typing import Iterator
 from typing import List
 
 
-def get_s3_objects(bucket: str) -> Iterator:
+def get_s3_objects(bucket: str) -> Iterator[Any]:
     """
     :param: bucket: str
     """
     s3: BaseClient = boto3.client("s3")
 
-    kwargs: Dict = {"Bucket": bucket}
+    kwargs: Dict[str, Any] = {"Bucket": bucket}
 
     while True:
 
         response: Dict[str, Any] = s3.list_objects_v2(**kwargs)
 
         try:
-            contents: List = response["Contents"]
+            contents: List[Any] = response["Contents"]
         except KeyError:
             return
 
@@ -46,10 +46,10 @@ def get_s3_keys(bucket: str) -> Iterator:
         yield obj["Key"]
 
 
-def get_list_of_s3_keys(bucket: str) -> List:
+def get_list_of_s3_keys(bucket: str) -> List[str]:
     """
     :param bucket: Name of bucket
-    :rtype: List
+    :rtype: List[str]
     """
     return [key for key in get_s3_keys(bucket='bucket')]
 
