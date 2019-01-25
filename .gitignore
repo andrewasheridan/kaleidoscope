@@ -5,10 +5,10 @@
 .DS_Store
 
 # pycharm stuff
-*.idea*
+.idea/*
 
 # dynamically created dirs
-*images*
+images/*
 
 # dev stuff
-*spark*
+spark/*
