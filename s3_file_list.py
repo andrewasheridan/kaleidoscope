@@ -23,7 +23,7 @@ def get_s3_objects(bucket: str) -> Iterator[Any]:
         response: Dict[str, Any] = s3.list_objects_v2(**kwargs)
 
         try:
-            contents: List[Any] = response["Contents"]
+            contents: List[Dict[str, Any]] = response["Contents"]
         except KeyError:
             return
 
@@ -37,7 +37,7 @@ def get_s3_objects(bucket: str) -> Iterator[Any]:
             break
 
 
-def get_s3_keys(bucket: str) -> Iterator:
+def get_s3_keys(bucket: str) -> Iterator[Any]:
     """
     :param bucket: Name of bucket
     """
@@ -51,5 +51,5 @@ def get_list_of_s3_keys(bucket: str) -> List[str]:
     :param bucket: Name of bucket
     :rtype: List[str]
     """
-    return [key for key in get_s3_keys(bucket='bucket')]
+    return [key for key in get_s3_keys(bucket=bucket)]
 
