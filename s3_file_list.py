@@ -2,32 +2,25 @@
 
 import boto3
 
-# For type hinting / annotations
-from botocore.client import BaseClient
-from typing import Any
-from typing import Dict
-from typing import Iterator
-from typing import List
 
-
-def get_s3_objects(bucket: str) -> Iterator[Any]:
+def get_s3_objects(bucket):
     """
-    :param: bucket: str
+    :param bucket:
+    :rtype: Iterator[Any]
     """
-    s3: BaseClient = boto3.client("s3")
+    s3 = boto3.client("s3")
 
-    kwargs: Dict[str, Any] = {"Bucket": bucket}
+    kwargs = {"Bucket": bucket}
 
     while True:
 
-        response: Dict[str, Any] = s3.list_objects_v2(**kwargs)
+        response = s3.list_objects_v2(**kwargs)
 
         try:
-            contents: List[Dict[str, Any]] = response["Contents"]
+            contents = response["Contents"]
         except KeyError:
             return
 
-        obj: Dict[str, Any]
         for obj in contents:
             yield obj
 
@@ -37,19 +30,23 @@ def get_s3_objects(bucket: str) -> Iterator[Any]:
             break
 
 
-def get_s3_keys(bucket: str) -> Iterator[Any]:
+def get_s3_keys(bucket):
     """
     :param bucket: Name of bucket
     """
-    obj: Dict[str, str]
     for obj in get_s3_objects(bucket):
         yield obj["Key"]
 
 
-def get_list_of_s3_keys(bucket: str) -> List[str]:
+def get_list_of_s3_keys(bucket):
     """
     :param bucket: Name of bucket
     :rtype: List[str]
     """
     return [key for key in get_s3_keys(bucket=bucket)]
+
+
+s3_keys = get_list_of_s3_keys('chainsaw-dogs-and-cats')
+print(len(s3_keys))
+
 
