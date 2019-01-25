@@ -3,3 +3,12 @@
 
 # ignore OSX Folder settings
 .DS_Store
+
+# pycharm stuff
+*.idea*
+
+# dynamically created dirs
+*images*
+
+# dev stuff
+*spark*

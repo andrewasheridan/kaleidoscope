@@ -1,0 +1,27 @@
+# spark cluster setup
+
+# in same dir as {master, worker}.yml
+peg up master.yml
+peg up worker.yml
+
+# in any dir
+peg fetch chainsaw-spark
+peg install chainsaw-spark ssh
+peg install chainsaw-spark aws
+peg install chainsaw-spark environment
+
+# reboot all nodes
+peg sshcmd cluster "sudo reboot"
+
+# check for bc 
+peg sshcmd cluster "bc --version"
+
+# if needed ssh into each node and install
+
+
+###
+###
+###
+
+# copy `dir` to bucket `chainsaw-dogs-and-cats`
+aws s3 cp dir s3://chainsaw-dogs-and-cats/ --recursive
