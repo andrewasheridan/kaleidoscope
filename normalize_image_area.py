@@ -1,11 +1,15 @@
-import sys
 import cv2
 import numpy as np
+import sys
 
 from itertools import takewhile
 
 # for type hinting / annotations
-from typing import List, Dict, Any, Union, Tuple
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Tuple
+from typing import Union
 
 
 def generate_basic_metadata(filenames: List[str]) -> Dict[str, Any]:
@@ -73,7 +77,6 @@ def determine_mean_image_area(metadata: Dict[str, Any]) -> float:
 
 
 def get_image_name_from_path(path: str) -> str:
-
     s: str = path[::-1]
     s = "".join(takewhile(lambda x: x != "/", s))[::-1]
     return s
