@@ -1,0 +1,3 @@
+
+class ImageAugmenter(object):
+    pass
