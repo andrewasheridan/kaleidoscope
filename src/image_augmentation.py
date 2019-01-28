@@ -9,7 +9,7 @@ from transformations import flip_left_right
 from transformations import noisy
 from random import shuffle, randint
 from tools import get_image_name_from_path
-
+import cv2
 import time
 
 
@@ -17,14 +17,18 @@ import time
 
 class ImageAugmenter(object):
 
-    def __init__(self, image, image_name, num_transformations):
+    def __init__(self, image, image_name, num_transformations, save=True):
 
         if type(image) is ndarray:
-            self.image = random_square_crop_with_resize(image)
+            self.image = random_square_crop_with_resize(image, image_name)
+            if self.image is None:
+                print(image_name)
         else:
             raise TypeError(
                 "`image` must be numpy array not {}".format(type(image))
-            )
+            )   
+
+
 
         if type(image_name) is str:
             self._image_name = image_name
@@ -44,7 +48,8 @@ class ImageAugmenter(object):
         self._aug_image_names = self._generate_augmented_image_names()
         self._transformations = self._generate_transformations()
         self._images = self.transform()
-        self.save()
+        if save:
+            self.save()
 
     def _generate_transformations(self):
 
@@ -94,7 +99,7 @@ class ImageAugmenter(object):
             f = self._transformations[name[-1:]]
 
             new_image = self.image.copy()
-            images[mod] = f(new_image)
+            images[mod] = f(new_image, self._image_name)
 
         return images
 
@@ -104,30 +109,30 @@ class ImageAugmenter(object):
             cv2.imwrite(dir + image_name, self._images[image_name])
             cv2.imwrite(dir + self._image_name, self.image)
 
-import cv2
-import glob
-import sys
+# import cv2
+# import glob
+# import sys
 
-problems = []
-start = time.time()
-print("starting at {}".format(start))
-fns = glob.glob("../downloaded_images/*")
-n = len(fns)
-for i, fn in enumerate(fns):
-    image = cv2.imread(fn)
-    image_name = get_image_name_from_path(fn)
-    try:
-    	augmenter = ImageAugmenter(image, image_name, 6)
-    except:
-    	problems.append(image_name)
+# problems = []
+# start = time.time()
+# print("starting at {}".format(start))
+# fns = glob.glob("../downloaded_images/*")
+# n = len(fns)
+# for i, fn in enumerate(fns):
+#     image = cv2.imread(fn)
+#     image_name = get_image_name_from_path(fn)
+#     try:
+#     	augmenter = ImageAugmenter(image, image_name, 1, save=False)
+#     except:
+#     	problems.append(image_name)
 
-    sys.stdout.write("\r{:2.4f}%".format(100 * (i + 1) / n))
+#     sys.stdout.write("\r{:2.4f}%".format(100 * (i + 1) / n))
 
 
-print('\n')
-end = time.time()
-print(end - start)
-print(problems)
+# print('\n')
+# end = time.time()
+# print(end - start)
+# print(problems)
 
 
 # image = cv2.imread("../downloaded_images/10243.jpg")
