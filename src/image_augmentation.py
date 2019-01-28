@@ -1,3 +1,5 @@
+"""Summary
+"""
 from numpy import ndarray, sin, deg2rad
 from string import ascii_lowercase
 from transformations import random_square_crop_with_resize
@@ -13,37 +15,83 @@ import cv2
 import time
 
 
+def image_as_ndarray(image):
+    # TODO: Add conversion to ndarray when possible
+    if type(image) is ndarray:
+        image = random_square_crop_with_resize(image)
+    else:
+        raise TypeError(
+            "`image` must be convertible to array not {}".format(type(image))
+        )
+    return image
+
+
+class BaseImageAugmenter(object):
+    def __init__(self, image_name, num_transformations, save=True):
+        """Base class for ImageAugmenter
+        
+        Parameters
+        ----------
+        image_name : str
+            Image name with extension ex: `dog.jpg`
+        num_transformations : int
+            Number of randomt transformations to apply
+        save : bool, optional, default=True
+            For debugging - Anything not saved is lost
+        """
+        self.image = image_as_ndarray(image)
 
 
 class ImageAugmenter(object):
 
+    """Summary
+    
+    Attributes
+    ----------
+    image : TYPE
+        Description
+    """
+
     def __init__(self, image, image_name, num_transformations, save=True):
-
-        if type(image) is ndarray:
-            self.image = random_square_crop_with_resize(image, image_name)
-            if self.image is None:
-                print(image_name)
-        else:
-            raise TypeError(
-                "`image` must be numpy array not {}".format(type(image))
-            )   
-
-
+        """Summary
+        
+        Parameters
+        ----------
+        image : TYPE
+            Description
+        image_name : TYPE
+            Description
+        num_transformations : TYPE
+            Description
+        save : bool, optional
+            Description
+        
+        Raises
+        ------
+        TypeError
+            Description
+        ValueError
+            Description
+        """
+        BaseImageAugmenter.__init__(
+            self,
+            image=image,
+            image_name=image_name,
+            num_transformations=num_transformations,
+            save=save,
+        )
+        
 
         if type(image_name) is str:
             self._image_name = image_name
         else:
-            raise TypeError(
-                "`image_name` must be str not {}".format(type(image_name))
-            )
+            raise TypeError("`image_name` must be str not {}".format(type(image_name)))
 
         # Limiting the number of transformations because of the simple naming convention
         if num_transformations <= 6:
             self._num_transformations = num_transformations
         else:
-            raise ValueError(
-                "No more than 6 transformations possible."
-            )
+            raise ValueError("No more than 6 transformations possible.")
 
         self._aug_image_names = self._generate_augmented_image_names()
         self._transformations = self._generate_transformations()
@@ -52,26 +100,50 @@ class ImageAugmenter(object):
             self.save()
 
     def _generate_transformations(self):
-
+        """Summary
+        
+        Returns
+        -------
+        TYPE
+            Description
+        """
         n = self._num_transformations
-        rand_tees = [rotate_and_zoom, adjust_contrast, adjust_brightness, adjust_saturation, flip_left_right, noisy]
+        rand_tees = [
+            rotate_and_zoom,
+            adjust_contrast,
+            adjust_brightness,
+            adjust_saturation,
+            flip_left_right,
+            noisy,
+        ]
         shuffle(rand_tees)
-        transformations = {ascii_lowercase[i] : rand_tees[i] for i in range(0,n)}
+        transformations = {ascii_lowercase[i]: rand_tees[i] for i in range(0, n)}
         return transformations
 
         # print(self._aug_image_names)
 
-
     def _generate_augmented_image_names(self):
-
+        """Summary
+        
+        Returns
+        -------
+        TYPE
+            Description
+        """
         words_to_append = self._generate_chars_to_append()
         name, extension = self._image_name.split(".")
         aug_image_names = [name + word + "." + extension for word in words_to_append]
-        aug_image_names.sort(key = lambda item: (len(item), item))
+        aug_image_names.sort(key=lambda item: (len(item), item))
         return aug_image_names
 
-
     def _generate_chars_to_append(self):
+        """Summary
+        
+        Returns
+        -------
+        TYPE
+            Description
+        """
         # NOTE: there is *surely* a slicker way to do this
         # trying to do https://stackoverflow.com/a/16241785/10918177
         # but with letters
@@ -83,14 +155,20 @@ class ImageAugmenter(object):
             word = ""
 
             for j in range(0, n):
-                if s[j] == '1':
+                if s[j] == "1":
                     word += ascii_lowercase[j]
 
             words.append(word)
         return words
 
     def transform(self):
-
+        """Summary
+        
+        Returns
+        -------
+        TYPE
+            Description
+        """
         images = {}
 
         for mod in self._aug_image_names:
@@ -104,10 +182,13 @@ class ImageAugmenter(object):
         return images
 
     def save(self):
+        """Summary
+        """
         for image_name in self._images:
-            dir = '../auger/'
+            dir = "../auger/"
             cv2.imwrite(dir + image_name, self._images[image_name])
             cv2.imwrite(dir + self._image_name, self.image)
+
 
 # import cv2
 # import glob
@@ -122,9 +203,9 @@ class ImageAugmenter(object):
 #     image = cv2.imread(fn)
 #     image_name = get_image_name_from_path(fn)
 #     try:
-#     	augmenter = ImageAugmenter(image, image_name, 1, save=False)
+#       augmenter = ImageAugmenter(image, image_name, 1, save=False)
 #     except:
-#     	problems.append(image_name)
+#       problems.append(image_name)
 
 #     sys.stdout.write("\r{:2.4f}%".format(100 * (i + 1) / n))
 
@@ -136,5 +217,3 @@ class ImageAugmenter(object):
 
 
 # image = cv2.imread("../downloaded_images/10243.jpg")
-
-
