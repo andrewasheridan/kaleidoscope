@@ -197,30 +197,3 @@ class ImageAugmenter(object):
             cv2.imwrite(dir + self._image_name, self.image)
 
 
-# import cv2
-# import glob
-# import sys
-
-# problems = []
-# start = time.time()
-# print("starting at {}".format(start))
-# fns = glob.glob("../downloaded_images/*")
-# n = len(fns)
-# for i, fn in enumerate(fns):
-#     image = cv2.imread(fn)
-#     image_name = get_image_name_from_path(fn)
-#     try:
-#       augmenter = ImageAugmenter(image, image_name, 1, save=False)
-#     except:
-#       problems.append(image_name)
-
-#     sys.stdout.write("\r{:2.4f}%".format(100 * (i + 1) / n))
-
-
-# print('\n')
-# end = time.time()
-# print(end - start)
-# print(problems)
-
-
-# image = cv2.imread("../downloaded_images/10243.jpg")
