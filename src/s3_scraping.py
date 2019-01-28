@@ -5,28 +5,36 @@ import glob
 import pickle
 import os
 
+S3_KEYS_DIR = "../s3_keys/"
+
+
 def save_batch_keys(batch_keys):
 
+    # make key dir if it doesnt exist 
+    os.makedirs(os.path.dirname(S3_KEYS_DIR), exist_ok=True)
 
-    os.makedirs(os.path.dirname('../s3_keys/'), exist_ok=True)
-    
     try:
-        current_max_filename = max(glob.glob('../s3_keys/batch_*'))
+        current_max_filename = max(glob.glob(S3_KEYS_DIR + "batch_*"))
     except ValueError:
         current_max_filename = None
 
     if current_max_filename:
+
         current_max_filename = current_max_filename.replace("_", " ")
         current_max_filename = current_max_filename.replace(".", " ")
-        current_max_number = [int(s) for s in current_max_filename.split() if s.isdigit()][0]
+        current_max_number = [
+            int(s) for s in current_max_filename.split() if s.isdigit()
+        ][0]
         new_number = "{0:0=10d}".format(current_max_number + 1)
+
     else:
+
         current_max_number = 0
         new_number = "{0:0=10d}".format(current_max_number)
-    
-    new_filename = '../s3_keys/batch_' + new_number + '.pickle'
-    
-    with open(new_filename, 'wb') as file:
+
+    new_filename = "../s3_keys/batch_" + new_number + ".pickle"
+
+    with open(new_filename, "wb") as file:
         pickle.dump(batch_keys, file)
 
 
@@ -49,8 +57,6 @@ def get_s3_objects(bucket):
         except KeyError:
             return
 
-
-
         for obj in contents:
             yield obj
 
@@ -61,8 +67,6 @@ def get_s3_objects(bucket):
             break
 
         # else:
-
-
 
 
 def get_s3_keys(bucket):
