@@ -4,6 +4,8 @@ from itertools import takewhile
 
 
 def get_image_name_from_path(path):
+
+    # reverse the string and grab the text between the `.` and first `/` then reverse back
     s = path[::-1]
     s = "".join(takewhile(lambda x: x != "/", s))[::-1]
     return s
@@ -17,6 +19,7 @@ def new_image_name(base_image_name, char):
 
 
 def save_obj(obj, filename, dir="s3_keys/"):
+    """filename does not include `.pickle` extensions""" 
     with open(dir + filename + ".pickle", "wb") as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
