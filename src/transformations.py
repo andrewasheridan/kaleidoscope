@@ -4,7 +4,7 @@ import numpy as np
 
 
 def random_square_crop_with_resize(
-    image, image_name, new_side_len=400, interpolation=cv2.INTER_LANCZOS4
+    image, new_side_len=400, interpolation=cv2.INTER_LANCZOS4
 ):
 
     height, width, _ = image.shape
@@ -94,7 +94,7 @@ def rotate_and_zoom(image, image_name):
 
 
 def adjust_contrast(image, image_name,):
-    alpha = 0.5 + random.random()
+    alpha = 0.5 + 1.5 * random.random()
     try:
         image = cv2.convertScaleAbs(image, alpha=alpha, beta=0)
     except:
@@ -112,7 +112,7 @@ def adjust_brightness(image, image_name,):
 
 
 def adjust_saturation(image, image_name,):
-    satadj = random.random() * 2
+    satadj = random.random() * 3
     try:
         imghsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV).astype("float32")
         h, s, v = cv2.split(imghsv)
@@ -144,7 +144,7 @@ def noisy(image, image_name,):
             
             row, col, ch = image.shape
             mean = 0
-            var = 1
+            var = 2
             sigma = var ** 0.5
             gauss = np.random.normal(mean, sigma, image.shape)
             gauss = gauss.reshape(row, col, ch)
@@ -152,7 +152,7 @@ def noisy(image, image_name,):
             return noisy_img.astype('uint8')
         
         elif noise_typ == "s&p":
-            prob = 0.005
+            prob = 0.01
     #     def add_salt_and_pepper(gb, prob):
             '''Adds "Salt & Pepper" noise to an image.
             gb: should be one-channel image with pixels in [0, 1] range
