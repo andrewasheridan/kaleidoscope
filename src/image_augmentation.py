@@ -21,7 +21,7 @@ import time
 
 class BaseImageAugmenter(object):
 
-    def __init__(self, image_name, num_transformations, save=True):
+    def __init__(self, image, image_name, num_transformations, save=True):
         """Base class for ImageAugmenter
         
         Parameters
@@ -75,6 +75,7 @@ class BaseImageAugmenter(object):
             noisy,
         ]
         shuffle(rand_tees)
+        
         transformations = {ascii_lowercase[i]: rand_tees[i] for i in range(0, n)}
         return transformations
 
@@ -122,7 +123,7 @@ class BaseImageAugmenter(object):
         return words
 
 
-class ImageAugmenter(object):
+class ImageAugmenter(BaseImageAugmenter):
 
     """Summary
     
@@ -161,14 +162,12 @@ class ImageAugmenter(object):
             save=save,
         )
         
-        # TODO: Change behavior to calling transform and save directly
-        self._images = self.transform()
+        # TODO: Change behavior to calling generate_images and save directly
+        self._images = self.generate_images()
         if save:
             self.save()
 
-
-
-    def transform(self):
+    def generate_images(self):
         """Summary
         
         Returns
@@ -193,6 +192,7 @@ class ImageAugmenter(object):
         """Summary
         """
         for image_name in self._images:
+            # print()
             cv2.imwrite(dir + image_name, self._images[image_name])
             cv2.imwrite(dir + self._image_name, self.image)
 
