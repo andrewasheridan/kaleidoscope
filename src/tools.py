@@ -11,3 +11,12 @@ def new_image_name(base_image_name, char):
     new_image_name = image_name[0] + char + "." + image_name[1]
     return new_image_name
     
+def save_obj(obj, filename, dir = 's3_keys/'):
+    with open(dir + filename + ".pickle", "wb") as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+
+def load_obj(path):
+    with open(path, "rb") as f:
+        return pickle.load(f)
+
