@@ -17,3 +17,7 @@ OPENCV_FILETYPES = [
     ".tiff",
     ".tif",
 ]
+
+S3_KEYS_DIR = "../s3_keys/"
+
+METADATA_BATCH_PREFIX = "batch_"
