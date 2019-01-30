@@ -1,4 +1,5 @@
 import os
+import boto3
 import pickle
 
 from constants import S3_KEYS_DIR
@@ -37,7 +38,7 @@ def load_obj(path):
         return pickle.load(f)
 
 
-def bucket_exists():                                                                                                                                                                                                                                                                                                                                                                                                        
+def bucket_exists(bucketname):                                                                                                                                                                                                                                                                                                                                                                                                        
     s3 = boto3.resource("s3")
     return s3.Bucket(bucketname) in s3.buckets.all()
 
