@@ -10,8 +10,9 @@ class S3ObjectRetrievalBase(object):
         try:
             if tools.bucket_exists(self.bucketname):
                 self.s3 = boto3.client("s3")
-            except:
-                raise ValueError("Bucket error: {} does not exist".format(self.bucketname))
+        except:
+            print()
+            raise ValueError("Bucket error: {} does not exist".format(self.bucketname))
 
 class S3ObjectRetrieval(S3ObjectRetrievalBase):
     def __init__(self, bucketname):
