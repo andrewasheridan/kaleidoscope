@@ -12,3 +12,6 @@ images/*
 
 # dev stuff
 spark/*
+
+# AWS Credentials
+kubernetes_config/secret.yaml
