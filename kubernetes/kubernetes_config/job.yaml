@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-wq-10
+spec:
+  parallelism: 10
+  template:
+    metadata:
+      name: job-wq-10
+    spec:
+      containers:
+      - name: c
+        image: andrewasheridan/worker:test3
+        command:  ["python", "/worker.py"]
+      restartPolicy: OnFailure
