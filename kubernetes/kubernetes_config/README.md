@@ -3,8 +3,7 @@
 
 ## AWS Credentials
 
-AWS Credentials are embedded in a Secret defined by `secret.yaml`. 
-This file is generated using `create_secret_yaml.py`:
+AWS Credentials are embedded in a Secret defined by `secret.yaml`, generated with `create_secret_yaml.py`:
 
 ```
 python create_secret_yaml.py $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $AWS_DEFAULT_REGION 
@@ -20,7 +19,7 @@ Install kubernetes operations manager and command line utility
 Create a bucket to store operations state
 ```
 aws s3api create-bucket --bucket chainsaw-kops-state-store --region us-east-1
-aws s3api put-bucket-versioning --bucket ramhiser-kops-state-store  --versioning-configuration Status=Enabled
+aws s3api put-bucket-versioning --bucket chainsaw-kops-state-store  --versioning-configuration Status=Enabled
 ```
 
 Set environment variables
