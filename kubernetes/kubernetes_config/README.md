@@ -30,19 +30,29 @@ export KOPS_STATE_STORE=s3://chainsaw-kops-state-store
 ```
 
 Create the cluster - make sure the zone is correct
-`kops create cluster --node-count=2 --node-size=m4.large --zones=us-east-1a`
+```
+kops create cluster --node-count=2 --node-size=m4.large --zones=us-east-1a
+```
 
 Edit the cluster - set min_nodes = 4, max_nodes = 13
-`kops edit cluster`
+```
+kops edit cluster
+```
 
 Spin up the cluster - make take some time
-`kops update cluster --name ${KOPS_CLUSTER_NAME} --yes`
+```
+kops update cluster --name ${KOPS_CLUSTER_NAME} --yes
+```
 
 Validate the cluster
-`kops validate cluster`
+```
+kops validate cluster
+```
 
 Check the active nodes
-`kubectl get nodes`
+```
+kubectl get nodes
+```
 
 
 ### Secrets, Pods, & Jobs
