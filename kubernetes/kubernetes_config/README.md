@@ -21,5 +21,5 @@ kubectl create -f secret.yaml
 kubectl create -f secret-pod.yaml
 kubectl create -f redis-pod.yaml
 kubectl create -f queue-maker-pod.yaml
-TODO: Insert worker pod creation command
+kubectl create -f job.yaml
 ```
