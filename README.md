@@ -1,5 +1,5 @@
 # super-duper-chainsaw
-
+# TODO: Update this readme it is out of date!
 
 ## Description
 Image augmentation preprocessing
@@ -35,5 +35,5 @@ After selection a dashboard is unveiled to track progress, upon completion the d
 One difficulty will be to balance the cost of computation with processing time. 
 
 ### Dependencies
-`cv2` `conda install -c conda-forge opencv`
-`boto` `conda install -c conda-forge boto3`
+OpenCV  -   `conda install -c conda-forge opencv`
+boto3   -   `conda install -c conda-forge boto3`
