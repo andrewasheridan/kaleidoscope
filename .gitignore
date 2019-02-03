@@ -1,21 +1,18 @@
 # ignore iPython notebook checkpoints
-*.ipynb_checkpoints
+*.ipynb_checkpoints*
 
 # ignore OSX Folder settings
-.DS_Store
+*.DS_Store
 
 # pycharm stuff
-.idea/*
+*.idea*
 
 # dynamically created dirs
-images/*
-downloaded_images/*
+images*
+downloaded_images*
 
 # dynamically created files
 *__pycache__*
-
-# dev stuff
-spark/*
 
 # AWS Credentials
 *secret.yaml
