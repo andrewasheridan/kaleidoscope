@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: queue-maker
-      image: andrewasheridan/queue:test23
+      image: andrewasheridan/queue-maker:delta
       ports:
         - containerPort: 6379
       command: ["python","/usr/local/src/queue_maker.py"]
@@ -29,3 +29,4 @@ spec:
           secretKeyRef:
             name: secret-secret
             key: AWS_SECRET_ACCESS_KEY
+  restartPolicy: Never
