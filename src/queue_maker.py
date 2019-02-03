@@ -11,16 +11,19 @@ import tools
 # # import os
 # # host = os.getenv("REDIS_SERVICE_HOST")
 
-q = rediswq.RedisWQ(name="job2", host="redis")
+queue = rediswq.RedisWQ(name="job2", host="redis")
 # print("Worker with sessionID: " + q.sessionID())
 # print("Initial queue state: empty=" + str(q.empty()))
 print("QM:rediswq.RedisWQ created")
 
 scraper = duper_chains_object_scraping.S3ObjectRetrieval(
-    bucketname="chainsaw-dogs-and-cats"
+    bucketname="chainsaw-dogs-and-cats",
+    queue = queue,
 )
-s3_keys = scraper.get_list_of_s3_keys()
-print(len(s3_keys))
+# s3_keys = 
+scraper.scrape_s3_metadata()
+print('QM:done')
+# print("Total number of keys = " + len(s3_keys))
 # for i in range(100):
 
 #     # print(i)
