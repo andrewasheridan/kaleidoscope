@@ -37,3 +37,35 @@ One difficulty will be to balance the cost of computation with processing time.
 ### Dependencies
 OpenCV  -   `conda install -c conda-forge opencv`
 boto3   -   `conda install -c conda-forge boto3`
+
+### Tree
+|--- super-duper-chainsaw
+     |--- .gitignore
+     |--- README.md
+     |--- src
+          |--- app.py
+          |--- constants.py
+          |--- duper_chain_worker_processing.py
+          |--- duper_chains_object_scraping.py
+          |--- image_augmentation.py
+          |--- object_loading.py
+          |--- queue_maker.py
+          |--- rediswq.py
+          |--- tools.py
+          |--- transformations.py
+          |--- worker.py
+     |--- kubernetes
+          |--- kubernetes_config
+               |--- README.md
+               |--- create_secret_yaml.py
+               |--- job.yaml
+               |--- queue-maker-pod.yaml
+               |--- redis-pod.yaml
+               |--- secret-pod.yaml
+          |--- containers
+               |--- queue-maker
+                    |--- Dockerfile
+                    |--- README.md
+               |--- worker
+                    |--- Dockerfile
+                    |--- README.md
