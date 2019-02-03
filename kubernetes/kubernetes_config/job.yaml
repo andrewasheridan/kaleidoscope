@@ -10,6 +10,24 @@ spec:
     spec:
       containers:
       - name: c
-        image: andrewasheridan/worker:test3
+        image: andrewasheridan/worker-bee:foxtrot
         command:  ["python", "/worker.py"]
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "0"
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            secretKeyRef:
+              name: secret-secret
+              key: AWS_DEFAULT_REGION
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: secret-secret
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: secret-secret
+              key: AWS_SECRET_ACCESS_KEY
       restartPolicy: OnFailure
