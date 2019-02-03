@@ -9,9 +9,13 @@
 
 # dynamically created dirs
 images/*
+downloaded_images/*
+
+# dynamically created files
+*__pycache__*
 
 # dev stuff
 spark/*
 
 # AWS Credentials
-kubernetes_config/secret.yaml
+*secret.yaml
