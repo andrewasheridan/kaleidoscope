@@ -21,6 +21,7 @@ import time
 import glob
 import boto3
 import os
+from subprocess import call
 
 
 class BaseImageAugmenter(object):
@@ -224,8 +225,12 @@ class ImageAugmenter(BaseImageAugmenter):
             total = 0 
             for root, dirs, files in os.walk(temp_save_dir): 
                 total += len(files) 
-            print('total files = {}'.format(total))
-            dest_bucket.upload_file(temp_save_dir + image_name,image_name)
+            # print('total files = {}'.format(total))
+            # dest_bucket.upload_file(temp_save_dir + image_name,image_name)
+        print('attempting s3 sync')
+        call(["aws", "s3", "sync", temp_save_dir, "s3://chainsaw-augmented-images"])
+        print('after s3 sync attempt')
+
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
         # images_to_upload = glob.glob(temp_save_dir + "*")
 
