@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: queue-maker
-      image: andrewasheridan/queue-maker:echo
+      image: andrewasheridan/queue-maker:foxtrot
       ports:
         - containerPort: 6379
       command: ["python","-u", "/usr/local/src/queue_maker.py"]
