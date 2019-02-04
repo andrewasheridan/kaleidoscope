@@ -39,6 +39,7 @@ OpenCV  -   `conda install -c conda-forge opencv`
 boto3   -   `conda install -c conda-forge boto3`
 
 ### Tree
+```
 |--- super-duper-chainsaw
      |--- .gitignore
      |--- README.md
@@ -69,3 +70,4 @@ boto3   -   `conda install -c conda-forge boto3`
                |--- worker
                     |--- Dockerfile
                     |--- README.md
+```
