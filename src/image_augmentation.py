@@ -217,11 +217,11 @@ class ImageAugmenter(BaseImageAugmenter):
             
             os.makedirs(os.path.dirname(temp_save_dir + image_name), exist_ok=True)
             cv2.imwrite(temp_save_dir + image_name, self._images[image_name])
-            print(glob.glob("*"))
-            print(glob.glob(temp_save_dir + "*"))
-            dest_loc = temp_save_dir + image_name
-            dest_loc = dest_loc[2:]
-            dest_bucket.upload_file(temp_save_dir + image_name,dest_loc)
+            # print(glob.glob("*"))
+            # print(glob.glob(temp_save_dir + "*"))
+            # dest_loc = temp_save_dir + image_name
+            # dest_loc = dest_loc[2:]
+            dest_bucket.upload_file(temp_save_dir + image_name,image_name)
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
         # images_to_upload = glob.glob(temp_save_dir + "*")
 
