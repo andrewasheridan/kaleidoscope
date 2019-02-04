@@ -9,7 +9,7 @@ def random_square_crop_with_resize(
 
     height, width, _ = image.shape
 
-    if 0 in image.shape:
+    if 0 in [height, width]:
         return None
 
     if height < width:

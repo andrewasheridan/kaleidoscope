@@ -11,7 +11,6 @@ from image_augmentation import ImageAugmenter
 from tools import get_image_name_from_path
 
 time.sleep(10)
-print('slept 5')
 host = "redis"
 # Uncomment next two lines if you do not have Kube-DNS working.
 # import os
@@ -24,7 +23,7 @@ destination_dir = './downloaded_images/'
 os.makedirs(os.path.dirname(destination_dir), exist_ok=True)
 
 while not queue.empty():
-    print("queue not empty")
+    # print("queue not empty")
 
     item = queue.lease(lease_secs=10, block=True, timeout=2)
 
@@ -32,19 +31,22 @@ while not queue.empty():
         print("item not None")
 
         batch = pickle.loads(item)
-        num_keys = len(batch)
+        # num_keys = len(batch)
         # batch is now a list of s3 objs
         for i, key in enumerate(batch):
 
             path = destination_dir + key["Key"]
+            print(path)
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            print(glob.glob(destination_dir + "*"))
-            print('path = '+ path)
-            print('key = '+ key["Key"])
+            # print('path = '+ path)
+            # print('key = '+ key["Key"])
             origin_bucket.download_file(key["Key"], path)
 
-            # image = cv2.imread(path)
-            # auger = ImageAugmenter(image, get_image_name_from_path(path), 1, save=True)
+            try:
+                image = cv2.imread(path)
+            except:
+                raise ValueError('cv2 err')
+            auger = ImageAugmenter(image, key["Key"], 6, save=True)
 
 
 
@@ -60,7 +62,7 @@ while not queue.empty():
 
 
 
-            sys.stdout.write("\r{:2.2f}%".format(100*(i+1)/num_keys))
+            # sys.stdout.write("\r{:2.2f}%".format(100*(i+1)/num_keys))
 
         q.complete(item)
 

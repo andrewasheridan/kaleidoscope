@@ -7,10 +7,10 @@ metadata:
 spec:
   containers:
     - name: queue-maker
-      image: andrewasheridan/queue-maker:delta
+      image: andrewasheridan/queue-maker:echo
       ports:
         - containerPort: 6379
-      command: ["python","/usr/local/src/queue_maker.py"]
+      command: ["python","-u", "/usr/local/src/queue_maker.py"]
       env:
       - name: PYTHONUNBUFFERED
         value: "0"

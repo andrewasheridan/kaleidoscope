@@ -42,11 +42,15 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
             response = self.s3.list_objects_v2(**kwargs)
             try:
                 contents = response["Contents"]
+                n=len(contents)//10
+                for i in range(len(contents)):
+                    batch = contents[i:i+n]
+                # [l[i:i + n] for i in range(0, len(l), n)]
 
                 # TODO: replace with add_to_redis_queue
                 # self._save_batch_keys(contents)
-                pickled_batch = pickle.dumps(contents)
-                self.queue.put(pickled_batch)
+                    pickled_batch = pickle.dumps(contents)
+                    self.queue.put(pickled_batch)
                 print("self.queue.put")
 
             except KeyError:

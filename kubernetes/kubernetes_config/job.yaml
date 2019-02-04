@@ -1,16 +1,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: job-wq-10
+  name: job-wq-50
 spec:
   parallelism: 10
   template:
     metadata:
-      name: job-wq-10
+      name: job-wq-50
     spec:
       containers:
       - name: c
-        image: andrewasheridan/worker-bee:whiskey
+        image: andrewasheridan/worker-bee:whiskey-hotel
         command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED

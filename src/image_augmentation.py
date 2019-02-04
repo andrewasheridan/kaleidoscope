@@ -15,9 +15,12 @@ from transformations import flip_left_right
 from transformations import noisy
 from random import shuffle, randint
 from tools import get_image_name_from_path
+from itertools import takewhile
 import cv2
 import time
 import glob
+import boto3
+import os
 
 
 class BaseImageAugmenter(object):
@@ -34,6 +37,7 @@ class BaseImageAugmenter(object):
         save : bool, optional, default=True
             For debugging - Anything not saved is lost
         """
+        print("BaseImageAugmenter:")
         # TODO: Add conversion to ndarray when possible
         if type(image) is ndarray:
             self.image = random_square_crop_with_resize(image)
@@ -66,6 +70,7 @@ class BaseImageAugmenter(object):
         TYPE
             Description
         """
+        print("_generate_transformations")
         n = self._num_transformations
         rand_tees = [
             rotate_and_zoom,
@@ -90,10 +95,16 @@ class BaseImageAugmenter(object):
         TYPE
             Description
         """
+        print("_generate_augmented_image_names")
+        # reverse the string and grab the text between the `.` and first `/` then reverse back
+        s = self._image_name[::-1]
+        s = "".join(takewhile(lambda x: x != "/", s))[::-1]
+
         words_to_append = self._generate_chars_to_append()
-        name, extension = self._image_name.split(".")
-        aug_image_names = [name + word + "." + extension for word in words_to_append]
+        name, extension = s.split(".")
+        aug_image_names = [self._image_name[:-len(s)] + name + word + "." + extension for word in words_to_append]
         aug_image_names.sort(key=lambda item: (len(item), item))
+        print("_generate_augmented_image_names end")
         return aug_image_names
 
     # TODO: Explain how this works and provide example
@@ -106,6 +117,7 @@ class BaseImageAugmenter(object):
         TYPE
             Description
         """
+        print("_generate_chars_to_append")
         # NOTE: there is *surely* a slicker way to do this
         # trying to do https://stackoverflow.com/a/16241785/10918177
         # but with letters
@@ -121,6 +133,7 @@ class BaseImageAugmenter(object):
                     word += ascii_lowercase[j]
 
             words.append(word)
+        print("_generate_chars_to_append end")
         return words
 
 
@@ -160,9 +173,8 @@ class ImageAugmenter(BaseImageAugmenter):
             image=image,
             image_name=image_name,
             num_transformations=num_transformations,
-            save=save,
         )
-        
+        print("ImageAugmenter")
         # TODO: Change behavior to calling generate_images and save directly
         self._images = self.generate_images()
         if save:
@@ -176,6 +188,7 @@ class ImageAugmenter(BaseImageAugmenter):
         TYPE
             Description
         """
+        print("generate_images")
         images = {}
 
         for mod in self._aug_image_names:
@@ -185,30 +198,34 @@ class ImageAugmenter(BaseImageAugmenter):
 
             new_image = self.image.copy()
             images[mod] = f(new_image, self._image_name)
-
+        print("generate_images end")
         return images
 
     # TODO: Change save from local to S3
     def save(self):
         """Summary
         """
+        print("save")
+        s3 = boto3.resource('s3', region_name='us-east-1')
+        dest_bucket = s3.Bucket('chainsaw-augmented-images')
+
         temp_save_dir = './aug_img_tmp/'
         os.makedirs(os.path.dirname(temp_save_dir), exist_ok=True)
 
         for image_name in self._images:
             # print()
-
+            print("image_name")
             cv2.imwrite(temp_save_dir + image_name, self._images[image_name])
-        cv2.imwrite(temp_save_dir + self._image_name, self.image)
-        images_to_upload = glob.glob(temp_save_dir + "*")
+            dest_bucket.upload_file(temp_save_dir + image_name, temp_save_dir + image_name)
+        # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
+        # images_to_upload = glob.glob(temp_save_dir + "*")
 
-        s3 = boto3.resource('s3', region_name='us-east-1')
-        dest_bucket = s3.Bucket('chainsaw-augmented-images')
+
 
         
 
-        for fn in images_to_upload:
-            dest_bucket.upload_file(fn, fn)
+        # for fn in images_to_upload:
+            # dest_bucket.upload_file(fn, fn)
 
 
 
