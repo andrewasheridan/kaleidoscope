@@ -221,6 +221,10 @@ class ImageAugmenter(BaseImageAugmenter):
             # print(glob.glob(temp_save_dir + "*"))
             # dest_loc = temp_save_dir + image_name
             # dest_loc = dest_loc[2:]
+            total = 0 
+            for root, dirs, files in os.walk(temp_save_dir): 
+                total += len(files) 
+            print('total files = {}'.format(total))
             dest_bucket.upload_file(temp_save_dir + image_name,image_name)
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
         # images_to_upload = glob.glob(temp_save_dir + "*")
