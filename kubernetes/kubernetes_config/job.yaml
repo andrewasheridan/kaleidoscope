@@ -3,14 +3,14 @@ kind: Job
 metadata:
   name: job-wq-50
 spec:
-  parallelism: 10
+  parallelism: 1
   template:
     metadata:
       name: job-wq-50
     spec:
       containers:
       - name: worker-bee
-        image: andrewasheridan/worker-bee:whiskey-lima
+        image: andrewasheridan/worker-bee:whiskey-mike
         command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED
