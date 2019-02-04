@@ -64,7 +64,7 @@ while not queue.empty():
 
             # sys.stdout.write("\r{:2.2f}%".format(100*(i+1)/num_keys))
 
-        q.complete(item)
+        queue.complete(item)
 
     else:
 
