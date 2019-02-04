@@ -10,8 +10,8 @@ spec:
     spec:
       containers:
       - name: c
-        image: andrewasheridan/worker-bee:foxtrot
-        command:  ["python", "/worker.py"]
+        image: andrewasheridan/worker-bee:whiskey
+        command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED
           value: "0"

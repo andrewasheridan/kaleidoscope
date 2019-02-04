@@ -1,33 +1,66 @@
 #!/usr/bin/env python
-
+import os
 import sys
 import time
 import pickle
 import rediswq
+import boto3
+import glob
+import cv2
+from image_augmentation import ImageAugmenter
+from tools import get_image_name_from_path
 
+time.sleep(10)
+print('slept 5')
 host = "redis"
 # Uncomment next two lines if you do not have Kube-DNS working.
 # import os
 # host = os.getenv("REDIS_SERVICE_HOST")
 
-q = rediswq.RedisWQ(name="job2", host="redis")
+queue = rediswq.RedisWQ(name="job2", host="redis")
+s3 = boto3.resource('s3', region_name='us-east-1')
+origin_bucket = s3.Bucket('chainsaw-dogs-and-cats')
+destination_dir = './downloaded_images/'
+os.makedirs(os.path.dirname(destination_dir), exist_ok=True)
 
-print("Worker with sessionID: " + q.sessionID())
-print("Initial queue state: empty=" + str(q.empty()))
+while not queue.empty():
+    print("queue not empty")
 
-while not q.empty():
-
-    print('q.not empty')
-    item = q.lease(lease_secs=10, block=True, timeout=2)
+    item = queue.lease(lease_secs=10, block=True, timeout=2)
 
     if item is not None:
+        print("item not None")
 
         batch = pickle.loads(item)
+        num_keys = len(batch)
+        # batch is now a list of s3 objs
+        for i, key in enumerate(batch):
 
-        print(batch[:-1])
-        # print("Working on " + itemstr)
+            path = destination_dir + key["Key"]
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            print(glob.glob(destination_dir + "*"))
+            print('path = '+ path)
+            print('key = '+ key["Key"])
+            origin_bucket.download_file(key["Key"], path)
 
-        time.sleep(10)  # Put your actual work here instead of sleep.
+            # image = cv2.imread(path)
+            # auger = ImageAugmenter(image, get_image_name_from_path(path), 1, save=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            sys.stdout.write("\r{:2.2f}%".format(100*(i+1)/num_keys))
 
         q.complete(item)
 
@@ -35,6 +68,8 @@ while not q.empty():
 
         print("Waiting for work")
 
-time.sleep(300)
+time.sleep(60)
         
 print("Queue empty, exiting")
+
+# save location = chainsaw-augmented-images

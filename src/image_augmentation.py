@@ -17,11 +17,12 @@ from random import shuffle, randint
 from tools import get_image_name_from_path
 import cv2
 import time
+import glob
 
 
 class BaseImageAugmenter(object):
 
-    def __init__(self, image, image_name, num_transformations, save=True):
+    def __init__(self, image, image_name, num_transformations):
         """Base class for ImageAugmenter
         
         Parameters
@@ -188,12 +189,27 @@ class ImageAugmenter(BaseImageAugmenter):
         return images
 
     # TODO: Change save from local to S3
-    def save(self, dir="../auger/"):
+    def save(self):
         """Summary
         """
+        temp_save_dir = './aug_img_tmp/'
+        os.makedirs(os.path.dirname(temp_save_dir), exist_ok=True)
+
         for image_name in self._images:
             # print()
-            cv2.imwrite(dir + image_name, self._images[image_name])
-            cv2.imwrite(dir + self._image_name, self.image)
+
+            cv2.imwrite(temp_save_dir + image_name, self._images[image_name])
+        cv2.imwrite(temp_save_dir + self._image_name, self.image)
+        images_to_upload = glob.glob(temp_save_dir + "*")
+
+        s3 = boto3.resource('s3', region_name='us-east-1')
+        dest_bucket = s3.Bucket('chainsaw-augmented-images')
+
+        
+
+        for fn in images_to_upload:
+            dest_bucket.upload_file(fn, fn)
+
+
 
 
