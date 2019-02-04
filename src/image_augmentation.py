@@ -215,7 +215,10 @@ class ImageAugmenter(BaseImageAugmenter):
         for image_name in self._images:
             # print()
             print("image_name")
+            
             cv2.imwrite(temp_save_dir + image_name, self._images[image_name])
+            print(glob.glob("*"))
+            print(glob.glob(temp_save_dir + "*"))
             dest_bucket.upload_file(temp_save_dir + image_name, temp_save_dir + image_name)
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
         # images_to_upload = glob.glob(temp_save_dir + "*")
