@@ -210,16 +210,18 @@ class ImageAugmenter(BaseImageAugmenter):
         dest_bucket = s3.Bucket('chainsaw-augmented-images')
 
         temp_save_dir = './aug_img_tmp/'
-        os.makedirs(os.path.dirname(temp_save_dir), exist_ok=True)
 
         for image_name in self._images:
             # print()
             print("image_name")
             
+            os.makedirs(os.path.dirname(temp_save_dir + image_name), exist_ok=True)
             cv2.imwrite(temp_save_dir + image_name, self._images[image_name])
             print(glob.glob("*"))
             print(glob.glob(temp_save_dir + "*"))
-            dest_bucket.upload_file(temp_save_dir + image_name, temp_save_dir + image_name)
+            dest_loc = temp_save_dir + image_name
+            dest_loc = dest_loc[2:]
+            dest_bucket.upload_file(temp_save_dir + image_name,dest_loc)
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
         # images_to_upload = glob.glob(temp_save_dir + "*")
 
