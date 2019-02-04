@@ -9,8 +9,8 @@ spec:
       name: job-wq-50
     spec:
       containers:
-      - name: c
-        image: andrewasheridan/worker-bee:whiskey-india
+      - name: worker-bee
+        image: andrewasheridan/worker-bee:whiskey-juliet
         command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED
