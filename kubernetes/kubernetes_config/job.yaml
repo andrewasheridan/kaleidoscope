@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: c
-        image: andrewasheridan/worker-bee:whiskey-hotel
+        image: andrewasheridan/worker-bee:whiskey-india
         command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED
