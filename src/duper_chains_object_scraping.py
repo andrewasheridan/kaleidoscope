@@ -49,7 +49,7 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
 
                 # TODO: replace with add_to_redis_queue
                 # self._save_batch_keys(contents)
-                    pickled_batch = pickle.dumps(contents)
+                    pickled_batch = pickle.dumps(batch)
                     self.queue.put(pickled_batch)
                 print("self.queue.put")
 
