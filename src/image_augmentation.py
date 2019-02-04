@@ -228,7 +228,7 @@ class ImageAugmenter(BaseImageAugmenter):
             # print('total files = {}'.format(total))
             # dest_bucket.upload_file(temp_save_dir + image_name,image_name)
         print('attempting s3 sync')
-        call(["aws", "s3", "sync", temp_save_dir, "s3://chainsaw-augmented-images"])
+        os.system("aws s3 sync " + temp_save_dir + " s3://chainsaw-augmented-images")
         print('after s3 sync attempt')
 
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
