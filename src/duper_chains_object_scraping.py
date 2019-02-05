@@ -7,9 +7,12 @@ class S3ObjectRetrievalBase(object):
     def __init__(self, bucket_name):
 
         self.bucket_name = bucket_name
+        self.s3 = self._add_s3_client()
+
+    def _add_s3_client(self):
         try:
             if tools.bucket_exists(self.bucket_name):
-                self.s3 = boto3.client("s3")
+                return boto3.client("s3")
 
         # TODO: Make this less broad
         # NOTE: Do I even need this here?
