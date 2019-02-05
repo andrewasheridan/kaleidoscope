@@ -6,13 +6,7 @@
 # TODO: Cleanup Imports
 from numpy import ndarray
 from string import ascii_lowercase
-from transformations import random_square_crop_with_resize
-from transformations import rotate_and_zoom
-from transformations import adjust_contrast
-from transformations import adjust_brightness
-from transformations import adjust_saturation
-from transformations import flip_left_right
-from transformations import noisy
+import transformations
 from random import shuffle
 from itertools import takewhile
 import cv2
@@ -24,16 +18,15 @@ class BaseImageAugmenter(object):
 
     def __init__(self, image, image_name, num_transformations):
 
-        print("BaseImageAugmenter:")
         # TODO: Add conversion to ndarray when possible
         if type(image) is ndarray:
-            self.image = random_square_crop_with_resize(image)
+            self.image = transformations.random_square_crop_with_resize(image)
         else:
             raise TypeError(
                 "`image` must be np.ndarray not {}".format(type(image))
             )
 
-        # TODO: Add conversino to str when possible
+        # TODO: Add conversion to str when possible
         if type(image_name) is str:
             self._image_name = image_name
         else:
@@ -47,24 +40,23 @@ class BaseImageAugmenter(object):
             raise ValueError("No more than 6 transformations possible.")
 
         self._aug_image_names = self._generate_augmented_image_names()
-        self._transformations = self._generate_transformations()
+        self._transforms = self._generate_shuffled_transforms()
 
-    def _generate_transformations(self):
+    def _generate_shuffled_transforms(self):
 
         n = self._num_transformations
         rand_tees = [
-            rotate_and_zoom,
-            adjust_contrast,
-            adjust_brightness,
-            adjust_saturation,
-            flip_left_right,
-            noisy,
+            transformations.rotate_and_zoom,
+            transformations.adjust_contrast,
+            transformations.adjust_brightness,
+            transformations.adjust_saturation,
+            transformations.flip_left_right,
+            transformations.noisy,
         ]
         shuffle(rand_tees)
         
-        transformations = {ascii_lowercase[i]: rand_tees[i] for i in range(0, n)}
-        return transformations
-
+        transforms = {ascii_lowercase[i]: rand_tees[i] for i in range(0, n)}
+        return transforms
 
     def _generate_augmented_image_names(self):
 
