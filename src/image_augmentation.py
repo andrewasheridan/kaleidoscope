@@ -102,10 +102,10 @@ class KaleidoscopeAugmenter(object):
         for mod in self._aug_image_names:
             name, extension = mod.split(".")
 
-            f = self._transforms[name[-1:]]
+            transform = self._transforms[name[-1:]]
 
             new_image = self.image.copy()
-            images[mod] = f(new_image, self._image_name)
+            images[mod] = transform(new_image, self._image_name)
         return images
 
     def save(self):
