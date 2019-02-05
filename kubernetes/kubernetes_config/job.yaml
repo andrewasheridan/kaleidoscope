@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: job-wq-50
 spec:
-  parallelism: 50
+  parallelism: 10
   template:
     metadata:
       name: job-wq-50
