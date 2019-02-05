@@ -17,7 +17,7 @@ queue = rediswq.RedisWQ(name="job2", host="redis")
 print("QM:rediswq.RedisWQ created")
 
 scraper = duper_chains_object_scraping.S3ObjectRetrieval(
-    bucketname="chainsaw-dogs-and-cats",
+    bucket_name="chainsaw-dogs-and-cats",
     queue = queue,
 )
 # s3_keys = 

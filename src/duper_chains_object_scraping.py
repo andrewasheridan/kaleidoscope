@@ -5,25 +5,25 @@ import pickle
 
 
 class S3ObjectRetrievalBase(object):
-    def __init__(self, bucketname):
+    def __init__(self, bucket_name):
 
-        self.bucketname = bucketname
+        self.bucket_name = bucket_name
         try:
-            if tools.bucket_exists(self.bucketname):
+            if tools.bucket_exists(self.bucket_name):
                 self.s3 = boto3.client("s3")
         except:
             print()
             raise ValueError(
                 "Bucket error: {} does not exist (or something else)".format(
-                    self.bucketname
+                    self.bucket_name
                 )
             )
 
 
 class S3ObjectRetrieval(S3ObjectRetrievalBase):
-    def __init__(self, bucketname, queue):
+    def __init__(self, bucket_name, queue):
         S3ObjectRetrievalBase.__init__(self,
-        bucketname=bucketname)
+                                       bucket_name=bucket_name)
         self.queue = queue
 
     # def _save_batch_keys(self):
@@ -35,7 +35,7 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
 
     def scrape_s3_metadata(self):
         print("scrape_s3_metadata")
-        kwargs = {"Bucket": self.bucketname}
+        kwargs = {"Bucket": self.bucket_name}
 
         while True:
 
