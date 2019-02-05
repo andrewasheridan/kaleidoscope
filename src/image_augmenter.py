@@ -71,7 +71,10 @@ class KaleidoscopeAugmenter(object):
 
         words_to_append = self._generate_chars_to_append()
         name, extension = s.split(".")
-        aug_image_names = [self._image_name[:-len(s)] + name + word + "." + extension for word in words_to_append]
+        aug_image_names = [
+            self._image_name[:-len(s)] + name + word + "." + extension
+            for word in words_to_append
+        ]
         aug_image_names.sort(key=lambda item: (len(item), item))
         return aug_image_names
 
