@@ -23,4 +23,4 @@ scraper = duper_chains_object_scraping.S3ObjectRetrieval(
     bucket_name=constants.S3_ORIGIN_BUCKET,
     queue=queue,
 )
-scraper.scrape_s3_metadata()
+scraper.add_keys_to_queue()

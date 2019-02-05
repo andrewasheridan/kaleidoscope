@@ -34,7 +34,7 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
             pickled_batch = pickle.dumps(batch)
             self.queue.put(pickled_batch)
 
-    def scrape_s3_metadata(self):
+    def add_keys_to_queue(self):
 
         kwargs = {"Bucket": self.bucket_name}
 
