@@ -10,13 +10,14 @@ class S3ObjectRetrievalBase(object):
         try:
             if tools.bucket_exists(self.bucket_name):
                 self.s3 = boto3.client("s3")
-        except:
-            print()
-            raise ValueError(
-                "Bucket error: {} does not exist (or something else)".format(
-                    self.bucket_name
-                )
-            )
+
+        # TODO: Make this less broad
+        # NOTE: Do I even need this here?
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+            print("AWS S3 bucket error.")
 
 
 class S3ObjectRetrieval(S3ObjectRetrievalBase):
