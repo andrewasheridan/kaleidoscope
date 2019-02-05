@@ -14,12 +14,12 @@ queue_maker.py
 Places items in the Redis work queue
 """
 import constants
-import duper_chains_object_scraping
+import key_scraper
 import rediswq
 
 
 queue = rediswq.RedisWQ(name="job2", host="redis")
-scraper = duper_chains_object_scraping.KaleidoscopeKeyScraper(
+scraper = key_scraper.KaleidoscopeKeyScraper(
     bucket_name=constants.S3_ORIGIN_BUCKET,
     queue=queue,
 )
