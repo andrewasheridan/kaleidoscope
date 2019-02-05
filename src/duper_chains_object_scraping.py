@@ -25,6 +25,15 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
         S3ObjectRetrievalBase.__init__(self, bucket_name=bucket_name)
         self.queue = queue
 
+    def _add_batches_to_queue(self, objects):
+        num_objects = len(objects)
+        batch_size = num_objects // 10
+
+        for i in range(num_objects):
+            batch = objects[i:i + batch_size]
+            pickled_batch = pickle.dumps(batch)
+            self.queue.put(pickled_batch)
+
     def scrape_s3_metadata(self):
 
         kwargs = {"Bucket": self.bucket_name}
@@ -34,15 +43,8 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
             response = self.s3.list_objects_v2(**kwargs)
 
             try:
-                contents = response["Contents"]
-
-                num_objects = len(contents)
-                batch_size = num_objects // 10
-
-                for i in range(num_objects):
-                    batch = contents[i:i+batch_size]
-                    pickled_batch = pickle.dumps(batch)
-                    self.queue.put(pickled_batch)
+                objects = response["Contents"]
+                self._add_batches_to_queue(objects)
 
             except KeyError:
                 return
