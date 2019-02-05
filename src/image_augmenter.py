@@ -26,13 +26,7 @@ class KaleidoscopeAugmenter(object):
 
     def __init__(self, image, image_name, num_transformations, save=True):
 
-        # TODO: Add conversion to ndarray when possible
-        if type(image) is ndarray:
-            self.image = transformations.random_square_crop_with_resize(image)
-        else:
-            raise TypeError(
-                "`image` must be np.ndarray not {}".format(type(image))
-            )
+        self._image = self._resize_raw_image(image)
 
         # TODO: Add conversion to str when possible
         if type(image_name) is str:
@@ -54,6 +48,17 @@ class KaleidoscopeAugmenter(object):
         self._images = self.generate_images()
         if save:
             self.save()
+
+    @staticmethod
+    def _resize_raw_image(image):
+
+        # TODO: Add conversion to ndarray when possible
+        if type(image) is ndarray:
+            return transformations.random_square_crop_with_resize(image)
+        else:
+            raise TypeError(
+                "`image` must be np.ndarray not {}".format(type(image))
+            )
 
     def _generate_shuffled_transforms(self):
 
@@ -116,7 +121,7 @@ class KaleidoscopeAugmenter(object):
 
             transform = self._transforms[name[-1:]]
 
-            new_image = self.image.copy()
+            new_image = self._image.copy()
             images[mod] = transform(new_image, self._image_name)
         return images
 
