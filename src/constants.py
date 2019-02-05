@@ -15,6 +15,9 @@ various fixed values used elsewhere
 # ID of S3 bucket used for retrieving files from
 S3_ORIGIN_BUCKET = "chainsaw-dogs-and-cats"
 
+# directory to save augmented images before sending to S3
+TMP_SAVE_DIR = "./aug_img_tmp/"
+
 # available OpenCV image file types
 # loaded images should be checked that their format is in this list
 # docs.opencv.org/3.0-beta/modules/imgcodecs/doc/reading_and_writing_images.html#imread

@@ -2,6 +2,7 @@
     
     Holds image augmentation classes, but not transformations (see transformations.py)
 """
+import constants
 import cv2
 import os
 import shutil
@@ -110,13 +111,11 @@ class KaleidoscopeAugmenter(object):
 
     def save(self):
 
-        temp_save_dir = './aug_img_tmp/'
-
         for image_name in self._images:
 
-            os.makedirs(os.path.dirname(temp_save_dir + image_name), exist_ok=True)
-            cv2.imwrite(temp_save_dir + image_name, self._images[image_name])
+            os.makedirs(os.path.dirname(constants.TMP_SAVE_DIR + image_name), exist_ok=True)
+            cv2.imwrite(constants.TMP_SAVE_DIR + image_name, self._images[image_name])
 
-        os.system("aws s3 cp " + temp_save_dir + " s3://chainsaw-augmented-images --recursive")
-        shutil.rmtree(temp_save_dir)
+        os.system("aws s3 cp " + constants.TMP_SAVE_DIR + " s3://chainsaw-augmented-images --recursive")
+        shutil.rmtree(constants.TMP_SAVE_DIR)
 
