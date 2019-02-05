@@ -18,6 +18,9 @@ S3_ORIGIN_BUCKET = "chainsaw-dogs-and-cats"
 # directory to save augmented images before sending to S3
 TMP_SAVE_DIR = "./aug_img_tmp/"
 
+# should reflect number of distinct transformations in transformations.py
+NUM_POSSIBLE_TRANSFORMS = 6
+
 # available OpenCV image file types
 # loaded images should be checked that their format is in this list
 # docs.opencv.org/3.0-beta/modules/imgcodecs/doc/reading_and_writing_images.html#imread

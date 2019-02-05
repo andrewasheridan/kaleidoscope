@@ -31,10 +31,10 @@ class KaleidoscopeAugmenter(object):
 
         # TODO: Pass in preset list of transformations instead of a list
         # Only have 6 transformations currently
-        if num_transformations <= 6:
+        if num_transformations <= constants.NUM_POSSIBLE_TRANSFORMS:
             self._num_transformations = num_transformations
         else:
-            raise ValueError("No more than 6 transformations possible.")
+            raise ValueError("No more than {} transformations possible.".format(constants.NUM_POSSIBLE_TRANSFORMS))
 
         self._aug_image_names = self._generate_augmented_image_names()
         self._transforms = self._generate_shuffled_transforms()
