@@ -1,8 +1,6 @@
 import os
 import boto3
-import pickle
 
-from constants import S3_KEYS_DIR
 from itertools import takewhile
 
 
@@ -24,18 +22,6 @@ def new_image_name(base_image_name, char):
 def make_dir_if_DNE(dir):
     """Make dir if it does not exist"""
     os.makedirs(os.path.dirname(dir), exist_ok=True)
-
-
-def save_obj(obj, filename, dir=S3_KEYS_DIR):
-    """filename does not include `.pickle` extensions""" 
-    make_dir_if_DNE(dir)
-    with open(dir + filename + ".pickle", "wb") as f:
-        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-
-
-def load_obj(path):
-    with open(path, "rb") as f:
-        return pickle.load(f)
 
 
 def bucket_exists(bucketname):                                                                                                                                                                                                                                                                                                                                                                                                        
@@ -67,10 +53,3 @@ def get_max_filename_in_dir_and_increment(dir, prefix="batch_"):
     new_filename = prefix + new_number
 
     return new_filename
-
-
-
-
-
-
-    
