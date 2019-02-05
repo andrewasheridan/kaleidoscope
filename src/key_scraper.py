@@ -1,3 +1,17 @@
+#  _
+# | |
+# | | _____ _   _     ___  ___ _ __ __ _ _ __   ___ _ __
+# | |/ / _ \ | | |   / __|/ __| '__/ _` | '_ \ / _ \ '__|
+# |   <  __/ |_| |   \__ \ (__| | | (_| | |_) |  __/ |
+# |_|\_\___|\__, |   |___/\___|_|  \__,_| .__/ \___|_|
+#            __/ |_____                 | |
+#           |___/______|                |_|
+"""
+key_scraper.py
+
+scans S3 bucket for keys
+adds keys to existing redis queue
+"""
 import boto3
 import tools
 import pickle
