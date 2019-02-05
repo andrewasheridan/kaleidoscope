@@ -12,6 +12,8 @@ constants.py
 various fixed values used elsewhere
 """
 
+# ID of S3 bucket used for retrieving files from
+S3_ORIGIN_BUCKET = "chainsaw-dogs-and-cats"
 
 # available OpenCV image file types
 # loaded images should be checked that their format is in this list
