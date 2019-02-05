@@ -3,7 +3,7 @@ import tools
 import pickle
 
 
-class S3ObjectRetrievalBase(object):
+class KaleidoscopeKeyScraper(object):
     def __init__(self, bucket_name, queue):
 
         self.bucket_name = bucket_name
@@ -37,25 +37,15 @@ class S3ObjectRetrievalBase(object):
         kwargs = {"Bucket": self.bucket_name}
 
         while True:
-
             response = self.s3.list_objects_v2(**kwargs)
 
             try:
                 objects = response["Contents"]
                 self._add_batches_to_queue(objects)
-
             except KeyError:
                 return
 
             try:
                 kwargs["ContinuationToken"] = response["NextContinuationToken"]
-
             except KeyError:
                 break
-
-class S3ObjectRetrieval(S3ObjectRetrievalBase):
-    def __init__(self, bucket_name, queue):
-        S3ObjectRetrievalBase.__init__(self, bucket_name=bucket_name)
-
-
-
