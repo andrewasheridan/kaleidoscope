@@ -1,6 +1,14 @@
+#                                         _
+#                                        | |
+#   __ _ _   _  __ _ _ __ ___   ___ _ __ | |_ ___ _ __
+#  / _` | | | |/ _` | '_ ` _ \ / _ \ '_ \| __/ _ \ '__|
+# | (_| | |_| | (_| | | | | | |  __/ | | | ||  __/ |
+#  \__,_|\__,_|\__, |_| |_| |_|\___|_| |_|\__\___|_|
+#               __/ |
+#              |___/
 """image_augmenter.py
-    
-    Holds image augmentation classes, but not transformations (see transformations.py)
+
+    Holds image augmentation class KaleidoscopeAugmenter
 """
 import constants
 import cv2
