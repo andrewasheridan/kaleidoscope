@@ -1,6 +1,6 @@
-"""image_augmentation.py
+"""image_augmenter.py
     
-    Holds image augmentation classes, but not trasformations (see transoformations.py)
+    Holds image augmentation classes, but not transformations (see transformations.py)
 """
 import cv2
 import os

@@ -7,7 +7,7 @@ import rediswq
 import boto3
 import glob
 import cv2
-from image_augmentation import KaleidoscopeAugmenter
+from image_augmenter import KaleidoscopeAugmenter
 from tools import get_image_name_from_path
 
 time.sleep(10)
