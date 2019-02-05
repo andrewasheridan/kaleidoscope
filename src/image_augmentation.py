@@ -112,7 +112,7 @@ class KaleidoscopeAugmenter(BaseImageAugmenter):
         for mod in self._aug_image_names:
             name, extension = mod.split(".")
 
-            f = self._transformations[name[-1:]]
+            f = self._transforms[name[-1:]]
 
             new_image = self.image.copy()
             images[mod] = f(new_image, self._image_name)
