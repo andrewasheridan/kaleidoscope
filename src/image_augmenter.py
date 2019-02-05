@@ -27,12 +27,7 @@ class KaleidoscopeAugmenter(object):
     def __init__(self, image, image_name, num_transformations, save=True):
 
         self._image = self._resize_raw_image(image)
-
-        # TODO: Add conversion to str when possible
-        if type(image_name) is str:
-            self._image_name = image_name
-        else:
-            raise TypeError("`image_name` must be str not {}".format(type(image_name)))
+        self._image_name = image_name
 
         # TODO: Pass in preset list of transformations instead of a list
         # Only have 6 transformations currently
