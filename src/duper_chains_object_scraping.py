@@ -4,10 +4,11 @@ import pickle
 
 
 class S3ObjectRetrievalBase(object):
-    def __init__(self, bucket_name):
+    def __init__(self, bucket_name, queue):
 
         self.bucket_name = bucket_name
         self.s3 = self._add_s3_client()
+        self.queue = queue
 
     def _add_s3_client(self):
         try:
@@ -21,12 +22,6 @@ class S3ObjectRetrievalBase(object):
             message = template.format(type(ex).__name__, ex.args)
             print(message)
             print("AWS S3 bucket error.")
-
-
-class S3ObjectRetrieval(S3ObjectRetrievalBase):
-    def __init__(self, bucket_name, queue):
-        S3ObjectRetrievalBase.__init__(self, bucket_name=bucket_name)
-        self.queue = queue
 
     def _add_batches_to_queue(self, objects):
         num_objects = len(objects)
@@ -57,3 +52,10 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
 
             except KeyError:
                 break
+
+class S3ObjectRetrieval(S3ObjectRetrievalBase):
+    def __init__(self, bucket_name, queue):
+        S3ObjectRetrievalBase.__init__(self, bucket_name=bucket_name)
+
+
+
