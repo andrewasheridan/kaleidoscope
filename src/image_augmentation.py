@@ -22,6 +22,7 @@ import glob
 import boto3
 import os
 from subprocess import call
+import shutil
 
 
 class BaseImageAugmenter(object):
@@ -228,9 +229,10 @@ class ImageAugmenter(BaseImageAugmenter):
             # print('total files = {}'.format(total))
             # dest_bucket.upload_file(temp_save_dir + image_name,image_name)
         print('attempting s3 sync')
-        os.system("aws s3 sync " + temp_save_dir + " s3://chainsaw-augmented-images")
+        os.system("aws s3 cp " + temp_save_dir + " s3://chainsaw-augmented-images --recursive")
         print('after s3 sync attempt')
-
+        shutil.rmtree(temp_save_dir)
+        print("after dir rm")
         # cv2.imwrite(temp_save_dir + self._image_name, self.image) # base image should save it...
         # images_to_upload = glob.glob(temp_save_dir + "*")
 
