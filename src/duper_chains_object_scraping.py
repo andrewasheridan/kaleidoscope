@@ -42,9 +42,9 @@ class S3ObjectRetrieval(S3ObjectRetrievalBase):
             response = self.s3.list_objects_v2(**kwargs)
             try:
                 contents = response["Contents"]
-                n=len(contents)//10
+                batch_size = len(contents)//10
                 for i in range(len(contents)):
-                    batch = contents[i:i+n]
+                    batch = contents[i:i+batch_size]
                 # [l[i:i + n] for i in range(0, len(l), n)]
 
                 # TODO: replace with add_to_redis_queue
