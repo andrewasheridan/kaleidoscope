@@ -2,16 +2,15 @@
     
     Holds image augmentation classes, but not trasformations (see transoformations.py)
 """
-
-# TODO: Cleanup Imports
-from numpy import ndarray
-from string import ascii_lowercase
-import transformations
-from random import shuffle
-from itertools import takewhile
 import cv2
 import os
 import shutil
+import transformations
+
+from itertools import takewhile
+from numpy import ndarray
+from random import shuffle
+from string import ascii_lowercase
 
 
 class BaseImageAugmenter(object):
