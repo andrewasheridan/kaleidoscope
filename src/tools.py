@@ -15,8 +15,8 @@ def get_image_name_from_path(path):
 def new_image_name(base_image_name, char):
     # assumes base_image_name only has one `.` before the extension
     image_name = base_image_name.split(".")
-    new_image_name = image_name[0] + char + "." + image_name[1]
-    return new_image_name
+    new_name = image_name[0] + char + "." + image_name[1]
+    return new_name
 
 
 def make_dir_if_DNE(dir):
@@ -24,9 +24,9 @@ def make_dir_if_DNE(dir):
     os.makedirs(os.path.dirname(dir), exist_ok=True)
 
 
-def bucket_exists(bucketname):                                                                                                                                                                                                                                                                                                                                                                                                        
+def bucket_exists(bucket_name):
     s3 = boto3.resource("s3")
-    return s3.Bucket(bucketname) in s3.buckets.all()
+    return s3.Bucket(bucket_name) in s3.buckets.all()
 
 
 def get_max_filename_in_dir_and_increment(dir, prefix="batch_"):
