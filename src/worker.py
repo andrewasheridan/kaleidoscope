@@ -7,7 +7,7 @@ import rediswq
 import boto3
 import glob
 import cv2
-from image_augmentation import ImageAugmenter
+from image_augmentation import KaleidoscopeAugmenter
 from tools import get_image_name_from_path
 
 time.sleep(10)
@@ -46,7 +46,7 @@ while not queue.empty():
                 image = cv2.imread(path)
             except:
                 raise ValueError('cv2 err')
-            auger = ImageAugmenter(image, key["Key"], 6, save=True)
+            auger = KaleidoscopeAugmenter(image, key["Key"], 6, save=True)
 
 
 

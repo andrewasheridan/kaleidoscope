@@ -28,7 +28,7 @@ import shutil
 class BaseImageAugmenter(object):
 
     def __init__(self, image, image_name, num_transformations):
-        """Base class for ImageAugmenter
+        """Base class for KaleidoscopeAugmenter
         
         Parameters
         ----------
@@ -139,7 +139,7 @@ class BaseImageAugmenter(object):
         return words
 
 
-class ImageAugmenter(BaseImageAugmenter):
+class KaleidoscopeAugmenter(BaseImageAugmenter):
 
     """Summary
     
@@ -176,7 +176,7 @@ class ImageAugmenter(BaseImageAugmenter):
             image_name=image_name,
             num_transformations=num_transformations,
         )
-        print("ImageAugmenter")
+        print("KaleidoscopeAugmenter")
         # TODO: Change behavior to calling generate_images and save directly
         self._images = self.generate_images()
         if save:
