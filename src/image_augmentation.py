@@ -13,9 +13,9 @@ from random import shuffle
 from string import ascii_lowercase
 
 
-class BaseImageAugmenter(object):
+class KaleidoscopeAugmenter(object):
 
-    def __init__(self, image, image_name, num_transformations):
+    def __init__(self, image, image_name, num_transformations, save=True):
 
         # TODO: Add conversion to ndarray when possible
         if type(image) is ndarray:
@@ -40,6 +40,11 @@ class BaseImageAugmenter(object):
 
         self._aug_image_names = self._generate_augmented_image_names()
         self._transforms = self._generate_shuffled_transforms()
+
+        # TODO: Change behavior to calling generate_images and save directly
+        self._images = self.generate_images()
+        if save:
+            self.save()
 
     def _generate_shuffled_transforms(self):
 
@@ -90,21 +95,6 @@ class BaseImageAugmenter(object):
             words.append(word)
         return words
 
-
-class KaleidoscopeAugmenter(BaseImageAugmenter):
-    def __init__(self, image, image_name, num_transformations, save=True):
-
-        BaseImageAugmenter.__init__(
-            self,
-            image=image,
-            image_name=image_name,
-            num_transformations=num_transformations,
-        )
-        # TODO: Change behavior to calling generate_images and save directly
-        self._images = self.generate_images()
-        if save:
-            self.save()
-
     def generate_images(self):
 
         images = {}
@@ -129,3 +119,4 @@ class KaleidoscopeAugmenter(BaseImageAugmenter):
 
         os.system("aws s3 cp " + temp_save_dir + " s3://chainsaw-augmented-images --recursive")
         shutil.rmtree(temp_save_dir)
+
