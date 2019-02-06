@@ -15,6 +15,9 @@ various fixed values used elsewhere
 # ID of S3 bucket used for retrieving files from
 S3_ORIGIN_BUCKET = "chainsaw-dogs-and-cats"
 
+# place to store downloaded imaged
+DOWNLOAD_DIRECTORY = './downloaded_images/'
+
 # directory to save augmented images before sending to S3
 TMP_SAVE_DIR = "./aug_img_tmp/"
 
