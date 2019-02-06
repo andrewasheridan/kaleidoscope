@@ -15,6 +15,9 @@ various fixed values used elsewhere
 # ID of S3 bucket used for retrieving files from
 S3_ORIGIN_BUCKET = "chainsaw-dogs-and-cats"
 
+# location of AWS hardware
+AWS_REGION = 'us-east-1'
+
 # place to store downloaded imaged
 DOWNLOAD_DIRECTORY = './downloaded_images/'
 
