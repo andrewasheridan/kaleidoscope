@@ -13,16 +13,19 @@ scans S3 bucket for keys
 adds keys to existing redis queue
 """
 import boto3
+import time
 import tools
 import pickle
 
 
 class KaleidoscopeKeyScraper(object):
-    def __init__(self, bucket_name, queue):
+    def __init__(self, bucket_name, queue, max_grabs=10):
 
         self.bucket_name = bucket_name
         self.s3 = self._add_s3_client()
         self.queue = queue
+        self.max_grabs = max_grabs
+        self.num_grabs = 0
 
     def _add_s3_client(self):
         try:
@@ -50,12 +53,13 @@ class KaleidoscopeKeyScraper(object):
 
         kwargs = {"Bucket": self.bucket_name}
 
-        while True:
+        while self.num_grabs < self.max_grabs:
             response = self.s3.list_objects_v2(**kwargs)
 
             try:
                 objects = response["Contents"]
                 self._add_batches_to_queue(objects)
+                self.num_grabs += 1
             except KeyError:
                 return
 
