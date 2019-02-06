@@ -67,6 +67,10 @@ class RedisWQ(object):
         """
         return self._main_qsize() == 0 and self._processing_qsize() == 0
 
+    @property
+    def get_queue_sizes(self):
+        return self._main_qsize(), self._processing_qsize()
+
     # TODO: implement this
     #    def check_expired_leases(self):
     #        """Return to the work queueReturn True if the queue is empty, False otherwise."""
