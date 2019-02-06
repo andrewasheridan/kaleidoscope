@@ -132,4 +132,4 @@ class KaleidoscopeAugmenter(object):
 
         os.system("aws s3 cp " + constants.TMP_SAVE_DIR + " s3://chainsaw-augmented-images --recursive --quiet")
         shutil.rmtree(constants.TMP_SAVE_DIR)
-        print("Image augmentation time: {}".format(time.time() - self._start))
+        # print("Image augmentation time: {}".format(time.time() - self._start))
