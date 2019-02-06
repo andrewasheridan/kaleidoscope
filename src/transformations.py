@@ -36,8 +36,7 @@ def random_square_crop_with_resize(
                 :, margin - rand_adjustment : -(margin + shift + rand_adjustment), :
             ]
 
-        
-    if width < height:
+    elif width < height:
 
         new_width = new_side_len
         new_height = int(height * new_width / width)
@@ -61,10 +60,10 @@ def random_square_crop_with_resize(
                 margin - rand_adjustment : -(margin + shift + rand_adjustment), :, :
             ]
 
-        if width == height:
-            image_square = cv2.resize(
-                image, (new_side_len, new_side_len), interpolation=interpolation
-            )
+    else:
+        image_square = cv2.resize(
+            image, (new_side_len, new_side_len), interpolation=interpolation
+        )
 #         print('h=w')
     return image_square
 
@@ -77,9 +76,9 @@ def rotate_and_zoom(image, image_name):
 
     rotation_matrix = cv2.getRotationMatrix2D((s//2, s//2), ang, 1)
     try:
-    	image = cv2.warpAffine(image, rotation_matrix, (s, s))
+        image = cv2.warpAffine(image, rotation_matrix, (s, s))
     except:
-    	print('rot: ', s, ang, image_name)
+        print('rot: ', s, ang, image_name)
 
     # TODO: Explain this
     # 1.41 ~ root(2), this sin func maxes at 45 deg, s//8 found empircally
@@ -129,11 +128,14 @@ def flip_left_right(img, image_name,):
     
     try:
         img = np.fliplr(img)
+        return img
     except:
         print('lr: ', image_name)
-    return img
+
 
 def noisy(image, image_name,):
+
+    # XXX: WHY is this a giant try except ...
     try:
 
         noise_typ = random.choice(['gauss', 's&p', 'poisson', 'speckle'])
