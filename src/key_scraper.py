@@ -13,7 +13,6 @@ scans S3 bucket for keys
 adds keys to existing redis queue
 """
 import boto3
-import time
 import tools
 import pickle
 
@@ -42,10 +41,10 @@ class KaleidoscopeKeyScraper(object):
 
     def _add_batches_to_queue(self, objects):
         num_objects = len(objects)
-        batch_size = num_objects // 10
+        batch_size = 100
 
-        for i in range(num_objects):
-            batch = objects[i:i + batch_size]
+        for i in range(num_objects // batch_size):
+            batch = objects[i*batch_size:(i + 1) * batch_size]
             pickled_batch = pickle.dumps(batch)
             self.queue.put(pickled_batch)
 
