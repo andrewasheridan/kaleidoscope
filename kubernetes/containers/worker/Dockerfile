@@ -5,7 +5,7 @@ RUN pip install numpy opencv-python
 COPY ./worker.py /worker.py
 COPY ./rediswq.py /rediswq.py
 COPY ./tools.py /tools.py
-COPY ./image_augmentater.py /image_augmentater.py
+COPY ./image_augmenter.py /image_augmenter.py
 COPY ./transformations.py /transformations.py
 COPY ./constants.py /constants.py
 
