@@ -3,14 +3,14 @@ kind: Job
 metadata:
   name: job-wq-50
 spec:
-  parallelism: 1
+  parallelism: 50
   template:
     metadata:
       name: job-wq-50
     spec:
       containers:
       - name: worker-bee
-        image: andrewasheridan/worker-bee:whiskey-romeo
+        image: andrewasheridan/worker-bee:whiskey-victor
         command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED
@@ -30,4 +30,9 @@ spec:
             secretKeyRef:
               name: secret-secret
               key: AWS_SECRET_ACCESS_KEY
+#      resources:
+#        limits:
+#          cpu: "1"
+#        requests:
+#          cpu: 500m
       restartPolicy: OnFailure
