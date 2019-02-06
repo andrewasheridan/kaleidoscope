@@ -11,7 +11,7 @@ from image_augmenter import KaleidoscopeAugmenter
 host = "redis"
 
 queue = rediswq.RedisWQ(name="job2", host="redis")
-s3 = boto3.resource('s3', region_name='us-east-1')
+s3 = boto3.resource('s3', region_name=constants.AWS_REGION)
 origin_bucket = s3.Bucket(constants.S3_ORIGIN_BUCKET)
 
 os.makedirs(os.path.dirname(constants.DOWNLOAD_DIRECTORY), exist_ok=True)
