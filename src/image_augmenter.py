@@ -14,6 +14,7 @@ import constants
 import cv2
 import os
 import shutil
+import time
 import transformations
 
 from itertools import takewhile
@@ -26,6 +27,7 @@ class KaleidoscopeAugmenter(object):
 
     def __init__(self, image, image_name, num_transformations, save=True):
 
+        self._start = time.time()
         self._image = self._resize_raw_image(image)
         self._image_name = image_name
 
@@ -130,4 +132,4 @@ class KaleidoscopeAugmenter(object):
 
         os.system("aws s3 cp " + constants.TMP_SAVE_DIR + " s3://chainsaw-augmented-images --recursive")
         shutil.rmtree(constants.TMP_SAVE_DIR)
-
+        print("Batch processing time: {}".format(time.time() - self._start))
