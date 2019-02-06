@@ -78,7 +78,8 @@ def rotate_and_zoom(image, image_name):
     try:
         image = cv2.warpAffine(image, rotation_matrix, (s, s))
     except:
-        print('rot: ', s, ang, image_name)
+        # print('rot: ', s, ang, image_name)
+        pass
 
     # TODO: Explain this
     # 1.41 ~ root(2), this sin func maxes at 45 deg, s//8 found empircally
@@ -88,7 +89,8 @@ def rotate_and_zoom(image, image_name):
     try:
         image = cv2.resize(image, (s, s), interpolation=cv2.INTER_LANCZOS4)
     except:
-        print('rot: ', s, x, ang, image_name)
+        # print('rot: ', s, x, ang, image_name)
+        pass
     return image
 
 
@@ -97,7 +99,8 @@ def adjust_contrast(image, image_name,):
     try:
         image = cv2.convertScaleAbs(image, alpha=alpha, beta=0)
     except:
-        print('cont: ', image_name, alpha)
+        # print('cont: ', image_name, alpha)
+        pass
     return image
 
 
@@ -106,7 +109,8 @@ def adjust_brightness(image, image_name,):
     try:
         image = cv2.convertScaleAbs(image, alpha=1, beta=beta)
     except:
-        print('brit: ', image_name, beta)
+        # print('brit: ', image_name, beta)
+        pass
     return image
 
 
@@ -120,7 +124,8 @@ def adjust_saturation(image, image_name,):
         imghsv = cv2.merge([h,s,v])
         image = cv2.cvtColor(imghsv.astype("uint8"), cv2.COLOR_HSV2BGR)
     except:
-        print('sat: ', image_name, satadj)
+        # print('sat: ', image_name, satadj)
+        pass
     return image
 
 
@@ -130,7 +135,8 @@ def flip_left_right(img, image_name,):
         img = np.fliplr(img)
         return img
     except:
-        print('lr: ', image_name)
+        # print('lr: ', image_name)
+        pass
 
 
 def noisy(image, image_name,):
@@ -177,8 +183,8 @@ def noisy(image, image_name,):
             noisy_img = image + image * gauss
             return noisy_img.astype('uint8')
     except:
-        print(noise_typ, image_name)
-
+        # print(noise_typ, image_name)
+        pass
 
 
 
