@@ -124,6 +124,7 @@ class KaleidoscopeAugmenter(object):
 
         for image_name in self._images:
 
+            # TODO: Test change os.path.dirname to os.path.basename
             os.makedirs(os.path.dirname(constants.TMP_SAVE_DIR + image_name), exist_ok=True)
             cv2.imwrite(constants.TMP_SAVE_DIR + image_name, self._images[image_name])
 
