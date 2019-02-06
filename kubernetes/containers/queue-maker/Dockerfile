@@ -2,7 +2,7 @@ FROM python:3
 
 RUN pip install redis  boto3
 
-COPY ./duper_chains_object_scraping.py /usr/local/src/duper_chains_object_scraping.py
+COPY ./key_scraper.py /usr/local/src/key_scraper.py
 COPY ./tools.py /usr/local/src/tools.py
 COPY ./constants.py /usr/local/src/constants.py
 
