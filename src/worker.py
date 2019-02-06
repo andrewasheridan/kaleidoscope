@@ -4,6 +4,7 @@ import cv2
 import constants
 import os
 import pickle
+import time
 import rediswq
 
 from image_augmenter import KaleidoscopeAugmenter
@@ -17,6 +18,7 @@ origin_bucket = s3.Bucket(constants.S3_ORIGIN_BUCKET)
 os.makedirs(os.path.dirname(constants.DOWNLOAD_DIRECTORY), exist_ok=True)
 
 while not queue.empty():
+    start = time.time()
     item = queue.lease(lease_secs=10, block=True, timeout=2)
 
     if item is not None:
@@ -35,6 +37,6 @@ while not queue.empty():
             auger = KaleidoscopeAugmenter(image, key["Key"], 6, save=True)
 
         queue.complete(item)
-
+        print("Batch processing time : {}".format(time.time() - start))
     else:
         print("Waiting for work")
