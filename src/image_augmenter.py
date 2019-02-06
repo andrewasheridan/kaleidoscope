@@ -130,6 +130,6 @@ class KaleidoscopeAugmenter(object):
             os.makedirs(os.path.dirname(constants.TMP_SAVE_DIR + image_name), exist_ok=True)
             cv2.imwrite(constants.TMP_SAVE_DIR + image_name, self._images[image_name])
 
-        os.system("aws s3 cp " + constants.TMP_SAVE_DIR + " s3://chainsaw-augmented-images --recursive")
+        os.system("aws s3 cp " + constants.TMP_SAVE_DIR + " s3://chainsaw-augmented-images --recursive --quiet")
         shutil.rmtree(constants.TMP_SAVE_DIR)
-        print("Batch processing time: {}".format(time.time() - self._start))
+        print("Image augmentation time: {}".format(time.time() - self._start))
