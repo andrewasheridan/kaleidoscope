@@ -17,7 +17,6 @@ Then you want to try a slightly different model, so you repeat the process from 
 For each iteration of your model you are augmenting your dataset. 
 The time spent on these augmentations, you could be training your models. 
 
-## Challenge
 To do the necessary transformations we turn to OpenCV, an open source computer vision library. 
 OpenCV has many transformations built in.
 Some are easy, like flip, others can be hard. 
