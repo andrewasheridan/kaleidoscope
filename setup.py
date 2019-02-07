@@ -1,19 +1,26 @@
 import subprocess
 
+from setuptools import find_packages
+from setuptools import setup
+
+PACKAGE_NAME = 'kaleidoscope/'
+
 
 def generate_version_file():
     """Generate `__version.py` using the `VERSION` file"""
-
+    filename = "__version__"
     with open("VERSION") as f:
-        __version__ = f.read().strip()
+        version = f.read().strip()
 
-    with open("src/__version__.py", "w") as f:
-        f.write('__version__="{}"'.format(__version__))
+    path = PACKAGE_NAME + filename + ".py"
+    with open(path, "w") as f:
+        f.write('{}="{}"'.format(filename, version))
 
-    print("Generating src/__version__.py: {}".format(__version__))
+    print("Generating {}: {}".format(path, version))
+    return version
 
 
-def generate_git_info_file(command, file, direc='src/'):
+def generate_git_info_file(command, filename):
 
     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     output, error = process.communicate()
@@ -27,23 +34,55 @@ def generate_git_info_file(command, file, direc='src/'):
             "Could not read git information, check directory"
         )
 
-    path = direc + file + ".py"
+    path = PACKAGE_NAME + filename + ".py"
     with open(path, "w") as f:
-        f.write('{} = """{}"""'.format(file, output))
+        f.write('{} = """{}"""'.format(filename, output))
 
     print("Generating {}: {}".format(path, output))
 
 
 def generate_git_branch_file():
     generate_git_info_file(command="git symbolic-ref -q HEAD",
-                           file="__branch__")
+                           filename="__branch__")
 
 
 def generate_git_log_file():
     generate_git_info_file(command='git log -n1 --pretty="%h%n%s%n--%n%an%n%ae%n%ai"',
-                           file="__gitlog__")
+                           filename="__gitlog__")
 
 
-generate_version_file()
+def get_description():
+    def get_description_lines():
+        seen_desc = False
+
+        with open('README.md') as f:
+            for line in f:
+                if seen_desc:
+                    if line.startswith('##'):
+                        break
+                    line = line.strip()
+                    if line:
+                        yield line
+                elif line.startswith('## Description'):
+                    seen_desc = True
+
+    return ' '.join(get_description_lines())
+
+
+__version__ = generate_version_file()
 generate_git_branch_file()
 generate_git_log_file()
+
+setup(
+    name="kaleidoscope",
+    version=__version__,
+    description="Interface for Kaleidoscope",
+    long_description=get_description(),
+    url="https://github.com/andrewasheridan/kaleidoscope",
+    author="Andrew Sheridan",
+    author_email="sheridan@berkeley.edu",
+    license="MIT",
+    package_dir={'kaleidoscope': 'kaleidoscope'},
+    packages=find_packages(),
+
+)
