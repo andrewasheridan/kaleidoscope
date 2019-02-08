@@ -1,0 +1,5 @@
+include kaleidoscope/yaml_templates/job_template.yaml
+include kaleidoscope/yaml_templates/queue_maker_template.yaml
+include kaleidoscope/yaml_templates/secret_store_template.yaml
+include kaleidoscope/yaml_templates/redis_master_template.yaml
+include kaleidoscope/yaml_templates/redis_service_template.yaml
