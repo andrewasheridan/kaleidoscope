@@ -16,6 +16,8 @@ import sys
 # <10 minutes later>
 # cluster. cluster_ready()
 # "cluster ready -
+
+
 class Cluster(object):
     def __init__(self, cluster_name_prefix='kaleidoscope'):
 
