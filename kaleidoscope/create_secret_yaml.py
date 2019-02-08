@@ -1,40 +1,31 @@
-"""writes AWS credentials to file using template
-Usage:
-python create_secret_yaml.py $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $AWS_DEFAULT_REGION 
-"""
 import base64
+import os
 
-from argparse import ArgumentParser
-
-parser = ArgumentParser()
-parser.add_argument("secrets", nargs="*")
-
-secrets = parser.parse_args().secrets
+import yaml_creation as yc
 
 
-def write_secret_yaml(
-    key, secret_key, region, name="secret-secret", filename="secret.yaml"
-):
-    """Summary
-    Writes AWS credentials to yaml file
-    """
-    key = base64.b64encode(key.encode())
-    secret_key = base64.b64encode(secret_key.encode())
-    region = base64.b64encode(region.encode())
+def add_aws_credentials_to_job(yaml):
 
-    template = """apiVersion: v1
-kind: Secret
-metadata:
-  name: {}
-data:
-  AWS_DEFAULT_REGION: {}
-  AWS_ACCESS_KEY_ID: {}
-  AWS_SECRET_ACCESS_KEY: {}"""
+    try:
+        key = base64.b64encode(os.environ["AWS_ACCESS_KEY_ID"].encode())
+        secret_key = base64.b64encode(os.environ["AWS_SECRET_ACCESS_KEY"].encode())
+        region = base64.b64encode(os.environ["AWS_DEFAULT_REGION"].encode())
+    except KeyError:
+        print("Set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_DEFAULT_REGION in your environment variables")
 
-    template = template.format(name, region.decode(), key.decode(), secret_key.decode())
+    i = yc.get_index_of_row_label(yaml, "data")
+    key = f"  AWS_ACCESS_KEY_ID: {key}\n"
+    secret_key = f"  AWS_DEFAULT_REGION: {secret_key}\n"
+    region = f"  AWS_SECRET_ACCESS_KEY: {region}\n"
 
-    with open(filename, "w") as yaml:
-        yaml.write(template)
+    yaml[i + 1] = key
+    yaml[i + 2] = secret_key
+    yaml[i + 3] = region
+
+    return yaml
 
 
-write_secret_yaml(*secrets)
+def create_secret_yaml():
+    secret_yaml = yc.load_yaml_template(path="yaml_templates/secret_template.yaml")
+    secret_yaml = add_aws_credentials_to_job(secret_yaml)
+    yc.write_yaml_file(yaml=secret_yaml, path='secret.yaml')
