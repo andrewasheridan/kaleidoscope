@@ -1,6 +1,6 @@
-To build & push this container navigate to `super-duper-chainsaw/src/` and do:
+To build & push this container navigate to `container_contents/src/` and do:
 
-```
-docker build -t [user-id/container-name:tag] -f ../kubernetes/containers/worker/Dockerfile .
-docker push [user-id/container-name:tag]
-```
+
+    docker build -t [user-id/container-name:tag] -f ../containers/worker/Dockerfile .
+    docker push [user-id/container-name:tag]
+    
