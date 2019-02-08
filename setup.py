@@ -83,6 +83,10 @@ setup(
     author_email="sheridan@berkeley.edu",
     license="MIT",
     package_dir={'kaleidoscope': 'kaleidoscope'},
+    include_package_data=True,
     packages=find_packages(),
-
+    python_requires=">=3.7",  # need to test this on lower versions
+    install_requires=[
+        "boto3",
+    ],
 )
