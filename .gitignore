@@ -7,16 +7,16 @@
 # pycharm stuff
 *.idea*
 
-# dynamically created dirs
+# dynamically created dirs and files
 images*
 downloaded_images*
-
-# dynamically created files
 *__pycache__*
 *__version__.py
 *__branch__.py
 *__gitlog__.py
-
+build/*
+dist/*
+*.egg-info/*
 
 # AWS Credentials
 *secret.yaml
