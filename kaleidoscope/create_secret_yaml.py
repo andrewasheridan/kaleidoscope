@@ -1,7 +1,7 @@
 import base64
 import os
 
-import yaml_creation as yc
+from . import _yaml_creation as yc
 
 
 def add_aws_credentials_to_job(yaml):

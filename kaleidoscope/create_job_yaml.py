@@ -1,4 +1,4 @@
-import yaml_creation as yc
+from . import _yaml_creation as yc
 
 
 def update_parallelism_in_job(yaml, num):
