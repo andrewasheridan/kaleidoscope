@@ -13,9 +13,10 @@ downloaded_images*
 
 # dynamically created files
 *__pycache__*
-src/__version__.py
-src/__branch__.py
-src/__gitlog__.py
+*__version__.py
+*__branch__.py
+*__gitlog__.py
+
 
 # AWS Credentials
 *secret.yaml
