@@ -1,8 +1,15 @@
+import pkg_resources
+
 
 def load_yaml_template(path):
-    with open(path) as f:
-        yaml = [line for line in f]
-        return yaml
+
+    if pkg_resources.resource_exists('kaleidoscope', path):
+        path = pkg_resources.resource_filename('kaleidoscope', path)
+        with open(path) as f:
+            yaml = [line for line in f]
+            return yaml
+    else:
+        raise IOError(f"File '{path}' not found")
 
 
 def get_index_of_row_label(yaml, label):
