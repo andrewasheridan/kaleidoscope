@@ -49,6 +49,7 @@ The Work Queue is filled with batches of Keys retrieved from an S3 bucket.
 Many Worker Pods are created, and they each take a batch of Keys from the Queue and run their script.
 Data from the Workers is copied to an S3 bucket, and the script begins again.
 
+![pipeline](pipeline.png)
 
 ### Tree
 ```
