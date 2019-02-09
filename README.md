@@ -1,4 +1,5 @@
-# kaleidoscope
+![kaleidoscope](logo.png)
+
 A Distributed Image Processing Pipeline
 
 ## Description
