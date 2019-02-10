@@ -22,6 +22,8 @@ from numpy import ndarray
 from random import shuffle
 from string import ascii_lowercase
 
+DESTINATION_S3 = os.environ['DESTINATION_S3']
+
 
 class KaleidoscopeAugmenter(object):
 
@@ -130,6 +132,6 @@ class KaleidoscopeAugmenter(object):
             os.makedirs(os.path.dirname(constants.TMP_SAVE_DIR + image_name), exist_ok=True)
             cv2.imwrite(constants.TMP_SAVE_DIR + image_name, self._images[image_name])
 
-        os.system("aws s3 cp " + constants.TMP_SAVE_DIR + " s3://chainsaw-augmented-images --recursive --quiet")
+        os.system("aws s3 cp " + constants.TMP_SAVE_DIR + f" s3://{DESTINATION_S3} --recursive --quiet")
         shutil.rmtree(constants.TMP_SAVE_DIR)
         # print("Image augmentation time: {}".format(time.time() - self._start))
