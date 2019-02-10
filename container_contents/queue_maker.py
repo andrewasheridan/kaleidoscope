@@ -16,11 +16,13 @@ Places items in the Redis work queue
 import constants
 import key_scraper
 import rediswq
+import os
 
+S3_ORIGIN_BUCKET = os.environ['ORIGIN_S3']
 
 queue = rediswq.RedisWQ(name="job2", host="redis")
 scraper = key_scraper.KaleidoscopeKeyScraper(
-    bucket_name=constants.S3_ORIGIN_BUCKET,
+    bucket_name=S3_ORIGIN_BUCKET,
     queue=queue,
 )
 scraper.add_keys_to_queue()
