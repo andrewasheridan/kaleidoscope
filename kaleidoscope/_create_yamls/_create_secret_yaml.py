@@ -13,8 +13,8 @@ def _add_aws_credentials_to_job(yaml):
 
         i = yc.get_index_of_row_label(yaml, "data")
         key = f"  AWS_ACCESS_KEY_ID: {key.decode()}\n"
-        secret_key = f"  AWS_DEFAULT_REGION: {secret_key.decode()}\n"
-        region = f"  AWS_SECRET_ACCESS_KEY: {region.decode()}\n"
+        secret_key = f"  AWS_SECRET_ACCESS_KEY: {secret_key.decode()}\n"
+        region = f"  AWS_DEFAULT_REGION: {region.decode()}\n"
 
         yaml[i + 1] = key
         yaml[i + 2] = secret_key
