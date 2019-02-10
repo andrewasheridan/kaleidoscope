@@ -1,67 +1,67 @@
+"""
+This interface is intended as a convenience.
+All the interactions here are possible with text editors and via the command line.
+
+The `kaleidoscope` pipeline was originally intended to be one utilized purely through the command line,
+as a result this interface class currently consists in large part as wrappers for command line utilities.
+
+This is not ideal... but it works
+
+The current implementation is a result of all of the initial explorations of Kubernetes, the configurations,
+cluster development and testing all being done purely in the command line.
+
+ALL or ALMOST ALL of these functions can and should be removed and replaced with those from `kubernetes-python`,
+the official python package. That this has not happened yet is solely due to time restrictions.
+
+"""
 import boto3
 import os
 import subprocess
 import sys
 
-from kaleidoscope.create_secret_yaml import create_secret_yaml
-from kaleidoscope.create_secret_store_yaml import create_secret_store_yaml
-from kaleidoscope.create_redis_service_yaml import create_redis_service_yaml
-from kaleidoscope.create_redis_master_yaml import create_redis_master_yaml
-from kaleidoscope.create_queue_maker_yaml import create_queue_maker_yaml
+import kaleidoscope._create_yamls as _create_yamls
 
 
-# import kaleidoscope.create_secret_yaml as create_secret_yaml
-# import kaleidoscope.create_secret_store_yaml as create_secret_store_yaml
-# cluster = Cluster("kaleidoscope")
-# "Cluster not ready. If you have previously created a cluster, please wait longer try again."
-# "If you have not created a cluster, please do Cluster.create_cluster()"
-
-# cluster.create_cluster(dry_run=False)
-# "Cluster creation may take up to 10 minutes. Check status with Cluster.cluster_ready()"
-
-# cluster.cluster_ready()
-# "Cluster not ready"
-
-# <10 minutes later>
-# cluster. cluster_ready()
-# "cluster ready -
-# TODO: validate_cluster()
-
-
-class Cluster(object):
+class Interface(object):
     def __init__(self, cluster_name_prefix='kaleidoscope', verbose=True):
+        """Interface for kaleidoscope"""
 
+        # for verbose printing
         self._vprint = sys.stdout.write if verbose else lambda *a, **k: None
 
-        self.cluster_name_prefix = cluster_name_prefix
-        self.cluster_name = self.cluster_name_prefix + ".k8s.local"
-        self.kops_state_store_name = self.cluster_name_prefix + "-kops-state-store"
-        self.original_images_bucket = self.cluster_name_prefix + "-original-images-bucket"
-        self.augmented_images_bucket = self.cluster_name_prefix + "-augmented-images-bucket"
+        self.cluster_name = cluster_name_prefix + ".k8s.local"
+        self.kops_state_store_name = cluster_name_prefix + "-kops-state-store"
+        self.original_images_bucket = cluster_name_prefix + "-original-images-bucket"
+        self.augmented_images_bucket = cluster_name_prefix + "-augmented-images-bucket"
 
-        # TODO: Find way to install homebrew, kops, kubectl via pip / setup.py, maybe?
         # kubectl and kops need to be installed via homebrew
         if not self._package_message_non_zero("kubectl", " -h"):
             install_command = "`brew update && brew install kops kubectl`"
             raise AssertionError("cannot find kubectl. Install via homebrew with " + install_command)
 
-        # TODO: Find a way to install this via setup.py
-        # NOTE: I had trouble passing the `--upgrade` argument in setup
+        # TODO: Find a way to pass `--upgrade --user` in setup.py install_requires
+        # awscli and kops need to be installed with --upgrade arg (according to AWS docs)
         if not self._package_message_non_zero("aws", " help"):
             install_command = "`pip install awscli --upgrade --user`"
             raise AssertionError("cannot find awscli. Install with " + install_command)
 
-        # need a place to store kops state
+        # need a place to store kops state (kubernetes cluster information)
         if not self._bucket_exists(self.kops_state_store_name):
             self._create_cluster_state_store()
 
+        # certain environment variables must be set by the user
         self._check_environmental_variables()
 
         # TODO: Test if cluster created (but how?)
-        if not self._cluster_ready():
-            self._vprint("\rCluster not ready. If you have created a cluster, please wait longer try again."
-                         + " If you have not created a cluster, please do Cluster.create_cluster()")
+        if self._cluster_ready():
+            self._vprint("\rCluster appears to be ready")
+            self._configure_base_cluster()
+            self._activate_base_components()
+        else:
+            print("\rCluster not ready.\n If you have created a cluster, please wait longer try again."
+                  + " If you have not created a cluster, please do Cluster.create_cluster()\n")
 
+    def create_image_buckets(self):
         # need a place to store original images
         if not self._bucket_exists(self.original_images_bucket):
             self._create_bucket(self.original_images_bucket)
@@ -82,7 +82,7 @@ class Cluster(object):
     def _bucket_exists(self, bucket_name):
         self._vprint(f"\r{bucket_name}: Checking existence")
         s3 = boto3.resource("s3")
-        return s3.Bucket(self.bucket_name) in s3.buckets.all()
+        return s3.Bucket(bucket_name) in s3.buckets.all()
 
     @staticmethod
     def _create_bucket(bucket_name):
@@ -123,6 +123,7 @@ class Cluster(object):
         output = self._pass_command_to_shell(command)
         message = f"Your cluster {self.cluster_name} is ready"
         # sys.stdout.write(output)
+
         return message in output
 
     def validate_cluster(self):
@@ -132,6 +133,8 @@ class Cluster(object):
     def _pass_command_to_shell(command):
         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         output, error = process.communicate()
+        if error:
+            raise OSError(error)
         output = output.decode().strip()
         return output
 
@@ -161,16 +164,61 @@ class Cluster(object):
             print(output)
         self._vprint(f"\rCluster deleted")
 
-    @staticmethod
-    def configure_base_cluster(self):
-        create_secret_yaml()
-        create_secret_store_yaml()
-        create_redis_service_yaml()
-        create_redis_master_yaml()
+    def _configure_base_cluster(self):
+        _create_yamls._create_secret_yaml()
+        _create_yamls._create_secret_store_yaml()
+        _create_yamls._create_redis_service_yaml()
+        _create_yamls._create_redis_master_yaml()
+        _create_yamls._create_queue_maker_yaml(self.original_images_bucket)
 
-    def upload(self, local_images_directory):
+    def _activate_secret(self):
+        self._vprint("\rPlanting Secret")
+        command = f"kubectl create -f secret.yaml"
+        self._pass_command_to_shell(command)
 
-        command = f"aws s3 cp {local_images_directory} s3://{self.kops_state_store_name} --recursive --quiet"
-        self._pass_command_to_shell()
-        os.system()
+    def _activate_secret_store(self):
+        self._vprint("\rCreating Secret")
+        command = f"kubectl create -f secret_store.yaml"
+        self._pass_command_to_shell(command)
 
+    def _activate_redis_service(self):
+        self._vprint("\rCreating Redis Service")
+        command = f"kubectl create -f redis_service.yaml"
+        self._pass_command_to_shell(command)
+
+    def _activate_redis_master(self):
+        self._vprint("\rStarting Redis Master")
+        command = f"kubectl create -f redis_master.yaml"
+        self._pass_command_to_shell(command)
+
+    def _activate_queue_maker(self):
+        self._vprint("\rStarting Queue Maker")
+        command = f"kubectl create -f queue_maker.yaml"
+        self._pass_command_to_shell(command)
+
+    def _activate_base_components(self):
+        self._activate_secret()
+        self._activate_secret_store()
+        self._activate_redis_service()
+        self._activate_redis_master()
+        self._vprint("\rReady to upload")
+        # NOTE: above line assumes no upload yet
+
+    # TODO: Change uploader to boto3, add vrpint for each uploaded image, add percent complete
+    def upload_images(self, local_images_directory):
+
+        self._vprint("\rUploading ...")
+        # TODO: Maybe this should check that the bucket is available first...
+        command = f"aws s3 cp {local_images_directory} s3://{self.original_images_bucket} --recursive --quiet"
+        self._pass_command_to_shell(command)
+        self._vprint("\rUploading ... Complete")
+        self._activate_queue_maker()
+        self._vprint("\rReady to transform")
+
+    def activate_workers(self, num_workers):
+        self._vprint("\rStarting Workers")
+        _create_yamls._create_job_yaml(origin_s3_bucket=self.original_images_bucket,
+                                       destination_s3_bucket=self.augmented_images_bucket,
+                                       num_workers=num_workers)
+        command = f"kubectl create -f job.yaml"
+        self._pass_command_to_shell(command)
