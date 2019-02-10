@@ -51,29 +51,65 @@ Data from the Workers is copied to an S3 bucket, and the script begins again.
 
 ![pipeline](pipeline.png)
 
+### Other
+
+#### AWS Credentials
+
+AWS Credentials are embedded in a Secret defined by `secret.yaml`, generated with `create_secret_yaml.py`:
+(Assumes AWS credentials are active environment variables)
+
+
+#### Kubernetes Installation
+Install kubernetes operations manager and command line utility
+`brew update && brew install kops kubectl`
+
+Set environment variables
+```
+export KOPS_CLUSTER_NAME=chainsaw.k8s.local
+export KOPS_STATE_STORE=s3://chainsaw-kops-state-store
+```
+
+
+
 ### Tree
 ```
-|--- super-duper-chainsaw
+|--- kaleidoscope
      |--- .gitignore
+     |--- Kaleidoscope_Example.ipynb
+     |--- MANIFEST.in
      |--- README.md
-     |--- src
-          |--- constants.py
-          |--- image_augmenter.py
-          |--- key_scraper.py
-          |--- queue_maker.py
-          |--- rediswq.py
-          |--- tools.py
-          |--- transformations.py
-          |--- worker.py
-     |--- kubernetes
-          |--- kubernetes_config
-               |--- README.md
-               |--- create_secret_yaml.py
-               |--- job.yaml
-               |--- queue-maker-pod.yaml
-               |--- redis-pod.yaml
-               |--- redis-service.yaml
-               |--- secret-pod.yaml
+     |--- VERSION
+     |--- logo.png
+     |--- pipeline.png
+     |--- setup.py
+     |--- kaleidoscope
+          |--- __init__.py
+          |--- _interface.py
+          |--- _create_yamls
+               |--- __init__.py
+               |--- _create_job_yaml.py
+               |--- _create_queue_maker_yaml.py
+               |--- _create_redis_master_yaml.py
+               |--- _create_redis_service_yaml.py
+               |--- _create_secret_store_yaml.py
+               |--- _create_secret_yaml.py
+               |--- _yaml_creation.py
+          |--- container_contents
+               |--- constants.py
+               |--- image_augmenter.py
+               |--- key_scraper.py
+               |--- queue_maker.py
+               |--- rediswq.py
+               |--- tools.py
+               |--- transformations.py
+               |--- worker.py
+          |--- yaml_templates
+               |--- job_template.yaml
+               |--- queue_maker_template.yaml
+               |--- redis_master_template.yaml
+               |--- redis_service_template.yaml
+               |--- secret_store_template.yaml
+               |--- secret_template.yaml
           |--- containers
                |--- queue-maker
                     |--- Dockerfile
@@ -81,4 +117,3 @@ Data from the Workers is copied to an S3 bucket, and the script begins again.
                |--- worker
                     |--- Dockerfile
                     |--- README.md
-```
