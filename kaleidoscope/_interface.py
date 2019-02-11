@@ -18,6 +18,8 @@ import boto3
 import os
 import subprocess
 import sys
+import itertools
+import time
 
 import kaleidoscope._create_yamls as _create_yamls
 
@@ -170,6 +172,7 @@ class Interface(object):
         _create_yamls._create_redis_service_yaml()
         _create_yamls._create_redis_master_yaml()
         _create_yamls._create_queue_maker_yaml(self.original_images_bucket)
+        _create_yamls._create_poll_yaml()
 
     def _activate_secret(self):
         self._vprint("\rPlanting Secret")
@@ -196,6 +199,11 @@ class Interface(object):
         command = f"kubectl create -f queue_maker.yaml"
         self._pass_command_to_shell(command)
 
+    def _activate_poll(self):
+        self._vprint("\rStarting Poll")
+        command = f"kubectl create -f poll.yaml"
+        self._pass_command_to_shell(command)
+
     def _activate_base_components(self):
         self._activate_secret()
         self._activate_secret_store()
@@ -205,20 +213,54 @@ class Interface(object):
         # NOTE: above line assumes no upload yet
 
     # TODO: Change uploader to boto3, add vrpint for each uploaded image, add percent complete
-    def upload_images(self, local_images_directory):
+    def upload_images(self, local_images_directory=None, s3_origin=None):
 
         self._vprint("\rUploading ...")
         # TODO: Maybe this should check that the bucket is available first...
-        command = f"aws s3 cp {local_images_directory} s3://{self.original_images_bucket} --recursive --quiet"
+        if s3_origin:
+            command = f"aws s3 cp s3://{s3_origin} s3://{self.original_images_bucket} --recursive --quiet"
+        elif local_images_directory:
+            command = f"aws s3 cp {local_images_directory} s3://{self.original_images_bucket} --recursive --quiet"
+        else:
+            raise ValueError('at least one image origin must be not None')
         self._pass_command_to_shell(command)
         self._vprint("\rUploading ... Complete")
         self._activate_queue_maker()
         self._vprint("\rReady to transform")
 
-    def activate_workers(self, num_workers):
+    def transform(self, num_workers):
+        self._activate_poll()
         self._vprint("\rStarting Workers")
         _create_yamls._create_job_yaml(origin_s3_bucket=self.original_images_bucket,
                                        destination_s3_bucket=self.augmented_images_bucket,
                                        num_workers=num_workers)
         command = f"kubectl create -f job.yaml"
         self._pass_command_to_shell(command)
+
+    def _get_progress(self):
+        command = "kubectl logs poll"
+        # self._vprint(f"\r$: {command}")
+        output = self._pass_command_to_shell(command)
+        output = output.splitlines()
+        if len(output) > 0:
+            counts = output[-1].split(":")
+        # if len(counts) > 0:
+            progress = int(counts[0])
+        else:
+            progress = None
+        return progress
+
+    def progress(self, delay=4, total=100*4):
+
+        spinner = itertools.cycle(['-', '/', '|', '\\'])
+        main = None
+        for i in range(total):
+
+            # if i % delay == 0:
+            main = self._get_progress()
+
+            batch_size = 10
+            if main:
+                sys.stdout.write("\r~{} original images remaining  {}".format(batch_size*(main+1), next(spinner)))
+                sys.stdout.flush()
+            time.sleep(1)
