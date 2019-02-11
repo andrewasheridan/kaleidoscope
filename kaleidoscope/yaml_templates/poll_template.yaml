@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: poll
+  labels:
+    app: poll-app
+spec:
+  containers:
+    - name: poll
+      image: andrewasheridan/poll:charlie
+      ports:
+        - containerPort: 6379
+      command: ["python","-u", "/usr/local/src/poll.py"]
+      env:
+      - name: PYTHONUNBUFFERED
+        value: "0"
+  restartPolicy: Never

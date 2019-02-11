@@ -4,3 +4,4 @@ include kaleidoscope/yaml_templates/secret_store_template.yaml
 include kaleidoscope/yaml_templates/secret_template.yaml
 include kaleidoscope/yaml_templates/redis_master_template.yaml
 include kaleidoscope/yaml_templates/redis_service_template.yaml
+include kaleidoscope/yaml_templates/poll_template.yaml
