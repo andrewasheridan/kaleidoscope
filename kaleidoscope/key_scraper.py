@@ -41,7 +41,7 @@ class KaleidoscopeKeyScraper(object):
 
     def _add_batches_to_queue(self, objects):
         num_objects = len(objects)
-        batch_size = 100
+        batch_size = 10
 
         for i in range(num_objects // batch_size):
             batch = objects[i*batch_size:(i + 1) * batch_size]
@@ -52,7 +52,7 @@ class KaleidoscopeKeyScraper(object):
 
         kwargs = {"Bucket": self.bucket_name}
 
-        while self.num_grabs < self.max_grabs:
+        while True:
             response = self.s3.list_objects_v2(**kwargs)
 
             try:
