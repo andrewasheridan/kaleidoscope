@@ -1,4 +1,4 @@
-from ._interface import Interface
+from .interface import Interface
 
 __all__ = [
     'Interface',

@@ -82,41 +82,48 @@ export KOPS_STATE_STORE=s3://chainsaw-kops-state-store
      |--- MANIFEST.in
      |--- README.md
      |--- VERSION
-     |--- logo.png
-     |--- pipeline.png
      |--- setup.py
+     |--- imgs
+          |--- interface.png
+          |--- logo.png
+          |--- pipeline.png
      |--- kaleidoscope
           |--- __init__.py
-          |--- _interface.py
+          |--- constants.py
+          |--- image_augmenter.py
+          |--- interface.py
+          |--- key_scraper.py
+          |--- poll.py
+          |--- queue_maker.py
+          |--- rediswq.py
+          |--- tools.py
+          |--- transformations.py
+          |--- worker.py
           |--- _create_yamls
                |--- __init__.py
                |--- _create_job_yaml.py
+               |--- _create_poll_yaml.py
                |--- _create_queue_maker_yaml.py
                |--- _create_redis_master_yaml.py
                |--- _create_redis_service_yaml.py
                |--- _create_secret_store_yaml.py
                |--- _create_secret_yaml.py
                |--- _yaml_creation.py
-          |--- container_contents
-               |--- constants.py
-               |--- image_augmenter.py
-               |--- key_scraper.py
-               |--- queue_maker.py
-               |--- rediswq.py
-               |--- tools.py
-               |--- transformations.py
-               |--- worker.py
           |--- yaml_templates
                |--- job_template.yaml
+               |--- poll_template.yaml
                |--- queue_maker_template.yaml
                |--- redis_master_template.yaml
                |--- redis_service_template.yaml
                |--- secret_store_template.yaml
                |--- secret_template.yaml
           |--- containers
+               |--- poll
+                    |--- Dockerfile
                |--- queue-maker
                     |--- Dockerfile
                     |--- README.md
                |--- worker
                     |--- Dockerfile
                     |--- README.md
+```
