@@ -1,6 +1,6 @@
 ![kaleidoscope](imgs/logo.png)
 
-A distributed image processing pipeline I developed as for Insight Data Science as a Data Engineering Fellow.
+A distributed image augmentation pipeline developed as a Data Engineering Project for Insight Data Science.
 
 ## Description
 Kaleidoscope takes in an image dataset and applies a series of chained transformations to augment the dataset. 
@@ -36,82 +36,71 @@ Given one image, and N transformations, 2^N images are generated.
 
 
 ![pipeline](imgs/pipeline.png)
-### Usage
-`# TODO: Fill This in`
 
-![interface](imgs/interface.png)
-### Other
+### Installation
+
+Clone the kaleidoscope repo:
+```
+git clone https://github.com/andrewasheridan/kaleidoscope.git
+```
+Create and activate a virtual environment that has Python 3.7, installed.
+I like to use Conda for this:
+```
+conda create -n python37 python=3.7
+conda activate python37
+```
+
+Navigate into `kaleidoscope` and do:
+```
+python setup.py install
+```
+This will install:
+```
+kaleidoscope
+aws-cli
+boto3
+opencv-python
+matplotlib
+numpy
+```
 
 #### AWS Credentials
 
-AWS Credentials are embedded in a Secret defined by `secret.yaml`, generated with `create_secret_yaml.py`:
-(Assumes AWS credentials are active environment variables)
+An AWS account is needed to use `kaleidoscope`, and your AWS credentials must available as local environment variables.
+
+in `~/.bash_profile` add:
+```
+export AWS_ACCESS_KEY_ID=XXXX
+export AWS_SECRET_ACCESS_KEY=XXXX
+export AWS_DEFAULT_REGION=XXXX
+``` 
+ - with XXXX replaced with their values from your AWS Account.
 
 
 #### Kubernetes Installation
-Install kubernetes operations manager and command line utility
-`brew update && brew install kops kubectl`
-
-Set environment variables
+The Kubernetes command line utility must be installed using [homebrew](https://brew.sh)
 ```
-export KOPS_CLUSTER_NAME=chainsaw.k8s.local
-export KOPS_STATE_STORE=s3://chainsaw-kops-state-store
+brew update && brew install kops kubectl
 ```
 
-
-
-### Tree
+The name of your kubernetes cluster **must** be set in `~/.bash_profile`.
+CLUSTER_NAME must be something completely unique, it will be used to create AWS S3 buckets.
 ```
-|--- kaleidoscope
-     |--- .gitignore
-     |--- Kaleidoscope_Example.ipynb
-     |--- MANIFEST.in
-     |--- README.md
-     |--- VERSION
-     |--- setup.py
-     |--- imgs
-          |--- interface.png
-          |--- logo.png
-          |--- pipeline.png
-     |--- kaleidoscope
-          |--- __init__.py
-          |--- constants.py
-          |--- image_augmenter.py
-          |--- interface.py
-          |--- key_scraper.py
-          |--- poll.py
-          |--- queue_maker.py
-          |--- rediswq.py
-          |--- tools.py
-          |--- transformations.py
-          |--- worker.py
-          |--- _create_yamls
-               |--- __init__.py
-               |--- _create_job_yaml.py
-               |--- _create_poll_yaml.py
-               |--- _create_queue_maker_yaml.py
-               |--- _create_redis_master_yaml.py
-               |--- _create_redis_service_yaml.py
-               |--- _create_secret_store_yaml.py
-               |--- _create_secret_yaml.py
-               |--- _yaml_creation.py
-          |--- yaml_templates
-               |--- job_template.yaml
-               |--- poll_template.yaml
-               |--- queue_maker_template.yaml
-               |--- redis_master_template.yaml
-               |--- redis_service_template.yaml
-               |--- secret_store_template.yaml
-               |--- secret_template.yaml
-          |--- containers
-               |--- poll
-                    |--- Dockerfile
-               |--- queue-maker
-                    |--- Dockerfile
-                    |--- README.md
-               |--- worker
-                    |--- Dockerfile
-                    |--- README.md
+export KOPS_CLUSTER_NAME=CLUSTER_NAME.k8s.local
+export KOPS_STATE_STORE=s3://CLUSTER_NAME-kops-state-store
 ```
 
+#### Environment variables
+Make sure to activate the environment variables by sourcing `~/.bash_profile`:
+```
+. ~/.bash_profile
+```
+
+
+### Usage
+
+![interface](imgs/interface.png)
+
+
+### Presentation
 ![](imgs/output.gif)
