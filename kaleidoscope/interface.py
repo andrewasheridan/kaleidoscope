@@ -33,7 +33,7 @@ import sys
 import itertools
 import time
 
-import kaleidoscope._create_yamls as _create_yamls
+import kaleidoscope.yaml_creation as yaml_creation
 
 
 class Interface(object):
@@ -167,7 +167,7 @@ class Interface(object):
         output = self._pass_command_to_shell(command)
         if raw_output:
             print(output)
-        self._spin_up_cluster(dry_run=dry_run,raw_output=raw_output)
+        self._spin_up_cluster(dry_run=dry_run, raw_output=raw_output)
 
     def delete_cluster(self, dry_run=False, raw_output=False):
         arg = " --yes" if not dry_run else ""
@@ -179,12 +179,12 @@ class Interface(object):
         self._vprint(f"\rCluster deleted")
 
     def _configure_base_cluster(self):
-        _create_yamls._create_secret_yaml()
-        _create_yamls._create_secret_store_yaml()
-        _create_yamls._create_redis_service_yaml()
-        _create_yamls._create_redis_master_yaml()
-        _create_yamls._create_queue_maker_yaml(self.original_images_bucket)
-        _create_yamls._create_poll_yaml()
+        yaml_creation.create_secret_yaml()
+        yaml_creation.create_secret_store_yaml()
+        yaml_creation.create_redis_service_yaml()
+        yaml_creation.create_redis_master_yaml()
+        yaml_creation.create_queue_maker_yaml(self.original_images_bucket)
+        yaml_creation.create_poll_yaml()
 
     def _activate_secret(self):
         self._vprint("\rPlanting Secret")
@@ -243,9 +243,9 @@ class Interface(object):
     def transform(self, num_workers):
         self._activate_poll()
         self._vprint("\rStarting Workers")
-        _create_yamls._create_job_yaml(origin_s3_bucket=self.original_images_bucket,
-                                       destination_s3_bucket=self.augmented_images_bucket,
-                                       num_workers=num_workers)
+        yaml_creation.create_job_yaml(origin_s3_bucket=self.original_images_bucket,
+                                      destination_s3_bucket=self.augmented_images_bucket,
+                                      num_workers=num_workers)
         command = f"kubectl create -f job.yaml"
         self._pass_command_to_shell(command)
 
