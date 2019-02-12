@@ -20,3 +20,9 @@ TMP_SAVE_DIR = "./aug_img_tmp/"
 
 # should reflect number of distinct transformations in transformations.py
 NUM_POSSIBLE_TRANSFORMS = 6
+
+# redis database host app name
+HOST = "redis"
+
+# redis database key for the jobs
+JOB_NAME = "job2"
