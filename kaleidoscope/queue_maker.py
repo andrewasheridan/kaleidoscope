@@ -13,13 +13,14 @@ queue_maker.py
 
 Places items in the Redis work queue
 """
+import constants
 import key_scraper
 import rediswq
 import os
 
 S3_ORIGIN_BUCKET = os.environ['ORIGIN_S3']
 
-queue = rediswq.RedisWQ(name="job2", host="redis")
+queue = rediswq.RedisWQ(name=constants.JOB_NAME, host=constants.HOST)
 
 
 def queue_maker(queue, bucket_name):
