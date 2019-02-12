@@ -3,7 +3,6 @@ FROM python:3
 RUN pip install redis  boto3
 
 COPY ./key_scraper.py /usr/local/src/key_scraper.py
-COPY ./tools.py /usr/local/src/tools.py
 COPY ./constants.py /usr/local/src/constants.py
 
 COPY ./queue_maker.py /usr/local/src/queue_maker.py

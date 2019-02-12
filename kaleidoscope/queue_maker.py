@@ -13,7 +13,6 @@ queue_maker.py
 
 Places items in the Redis work queue
 """
-import constants
 import key_scraper
 import rediswq
 import os
@@ -21,8 +20,23 @@ import os
 S3_ORIGIN_BUCKET = os.environ['ORIGIN_S3']
 
 queue = rediswq.RedisWQ(name="job2", host="redis")
-scraper = key_scraper.KaleidoscopeKeyScraper(
-    bucket_name=S3_ORIGIN_BUCKET,
-    queue=queue,
-)
-scraper.add_keys_to_queue()
+
+
+def queue_maker(queue, bucket_name):
+    """
+    Populates the redis queue using KaleidoscopeKeyScraper.
+    Expects the Redis service and pod to be active, expects files to be uploaded
+    :param queue: The RedisWQ()
+    :param bucket_name: bucket where original files are located
+    :return: None
+    """
+    scraper = key_scraper.KaleidoscopeKeyScraper(
+        bucket_name=bucket_name,
+        queue=queue,
+    )
+    scraper.add_keys_to_queue()
+
+    return None
+
+
+queue_maker(queue, S3_ORIGIN_BUCKET)

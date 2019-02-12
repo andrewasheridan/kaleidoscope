@@ -1,11 +1,23 @@
 #!/usr/bin/env python
+#                _ _
+#               | (_)
+#   _ __ ___  __| |_ _____      ____ _
+#  | '__/ _ \/ _` | / __\ \ /\ / / _` |
+#  | | |  __| (_| | \__ \\ V  V | (_| |
+#  |_|  \___|\__,_|_|___/ \_/\_/ \__, |
+#                                   | |
+#                                   |_|
+"""
+rediswq.py
 
-# Based on https://kubernetes.io/docs/tasks/job/fine-parallel-processing-work-queue/
-#
-#
-# Based on http://peter-hoffmann.com/2012/python-simple-queue-redis-queue.html
-# and the suggestion in the redis documentation for RPOPLPUSH, at
-# http://redis.io/commands/rpoplpush, which suggests how to implement a work-queue.
+Contains RedisWQ() Class that acts as a work queue using a Redis database
+
+Based on https://kubernetes.io/docs/tasks/job/fine-parallel-processing-work-queue/
+
+Based on http://peter-hoffmann.com/2012/python-simple-queue-redis-queue.html
+and the suggestion in the redis documentation for RPOPLPUSH, at
+http://redis.io/commands/rpoplpush, which suggests how to implement a work-queue.
+"""
 
 
 import hashlib
@@ -26,7 +38,6 @@ class RedisWQ(object):
     concurrently.
     """
 
-
     def __init__(self, name, **redis_kwargs):
         """The default connection parameters are: host='localhost', port=6379, db=0
 
@@ -44,21 +55,17 @@ class RedisWQ(object):
         self._processing_q_key = name + ":processing"
         self._lease_key_prefix = name + ":leased_by_session:"
 
-
     def sessionID(self):
         """Return the ID for this session."""
         return self._session
-
 
     def _main_qsize(self):
         """Return the size of the main queue."""
         return self._db.llen(self._main_q_key)
 
-
     def _processing_qsize(self):
         """Return the size of the main queue."""
         return self._db.llen(self._processing_q_key)
-
 
     def empty(self):
         """Return True if the queue is empty, including work being done, False otherwise.
@@ -69,33 +76,16 @@ class RedisWQ(object):
 
     @property
     def get_queue_sizes(self):
+        "Get the number of elements in the main and processing queue"
         return self._main_qsize(), self._processing_qsize()
-
-    # TODO: implement this
-    #    def check_expired_leases(self):
-    #        """Return to the work queueReturn True if the queue is empty, False otherwise."""
-    #        # Processing list should not be _too_ long since it is approximately as long
-    #        # as the number of active and recently active workers.
-    #        processing = self._db.lrange(self._processing_q_key, 0, -1)
-    #        for item in processing:
-    #          # If the lease key is not present for an item (it expired or was
-    #          # never created because the client crashed before creating it)
-    #          # then move the item back to the main queue so others can work on it.
-    #          if not self._lease_exists(item):
-    #            TODO: transactionally move the key from processing queue to
-    #            to main queue, while detecting if a new lease is created
-    #            or if either queue is modified.
-
 
     def _itemkey(self, item):
         """Returns a string that uniquely identifies an item (bytes)."""
         return hashlib.sha224(item).hexdigest()
 
-
     def _lease_exists(self, item):
         """True if a lease on 'item' exists."""
         return self._db.exists(self._lease_key_prefix + self._itemkey(item))
-
 
     def lease(self, lease_secs=60, block=True, timeout=None):
         """Begin working on an item the work queue. 
@@ -124,7 +114,6 @@ class RedisWQ(object):
             self._db.setex(self._lease_key_prefix + itemkey, lease_secs, self._session)
         return item
 
-
     def complete(self, value):
         """Complete working on the item with 'value'.
 
@@ -140,15 +129,6 @@ class RedisWQ(object):
         itemkey = self._itemkey(value)
         self._db.delete(self._lease_key_prefix + itemkey, self._session)
 
-
-    # TODO: add functions to clean up all keys associated with "name" when
-    # processing is complete.
-
-
     def put(self, item):
         """Put item into the queue."""
         self._db.rpush(self._main_q_key, item)
-
-
-# TODO(etune): finish code to GC expired leases, and call periodically
-#  e.g. each time lease times out.

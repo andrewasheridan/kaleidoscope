@@ -1,17 +1,29 @@
+#   _       _             __
+#  (_)     | |           / _|
+#   _ _ __ | |_ ___ _ __| |_ __ _  ___ ___
+#  | | '_ \| __/ _ | '__|  _/ _` |/ __/ _ \
+#  | | | | | ||  __| |  | || (_| | (_|  __/
+#  |_|_| |_|\__\___|_|  |_| \__,_|\___\___|
+#
+#
 """
+interface.py
+
 This interface is intended as a convenience.
 All the interactions here are possible with text editors and via the command line.
 
 The `kaleidoscope` pipeline was originally intended to be one utilized purely through the command line,
 as a result this interface class currently consists in large part as wrappers for command line utilities.
 
-This is not ideal... but it works
+This is not ideal... but it works for now.
 
-The current implementation is a result of all of the initial explorations of Kubernetes, the configurations,
+All of the initial explorations of Kubernetes, the configurations,
 cluster development and testing all being done purely in the command line.
 
-ALL or ALMOST ALL of these functions can and should be removed and replaced with those from `kubernetes-python`,
-the official python package. That this has not happened yet is solely due to time restrictions.
+
+In my opinion ALL or ALMOST ALL of these functions can and should be removed and replaced with those from
+`kubernetes-python`,the official python package, or something similar.
+That this has not happened yet is solely due to time restrictions.
 
 """
 import boto3
@@ -239,28 +251,25 @@ class Interface(object):
 
     def _get_progress(self):
         command = "kubectl logs poll"
-        # self._vprint(f"\r$: {command}")
         output = self._pass_command_to_shell(command)
         output = output.splitlines()
         if len(output) > 0:
             counts = output[-1].split(":")
-        # if len(counts) > 0:
             progress = int(counts[0])
         else:
             progress = None
         return progress
 
-    def progress(self, delay=4, total=100*4):
+    def progress(self, delay=1, total=100):
 
         spinner = itertools.cycle(['-', '/', '|', '\\'])
-        main = None
         for i in range(total):
 
             # if i % delay == 0:
             main = self._get_progress()
 
-            batch_size = 10
+            batch_size = 100
             if main:
                 sys.stdout.write("\r~{} original images remaining  {}".format(batch_size*(main+1), next(spinner)))
                 sys.stdout.flush()
-            time.sleep(1)
+            time.sleep(delay)
