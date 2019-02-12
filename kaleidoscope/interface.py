@@ -33,6 +33,8 @@ import sys
 import itertools
 import time
 
+from concurrent.futures.thread import ThreadPoolExecutor
+
 import kaleidoscope.yaml_creation as yaml_creation
 
 
@@ -273,3 +275,46 @@ class Interface(object):
                 sys.stdout.write("\r~{} original images remaining  {}".format(batch_size*(main+1), next(spinner)))
                 sys.stdout.flush()
             time.sleep(delay)
+
+    def _download_augmented_images_pointers(self):
+        config = boto3.session.Config(max_pool_connections=os.cpu_count() * 5)
+        s3 = boto3.client("s3", config=config)
+
+        image_pointers = []
+
+        kwargs = {"Bucket": self.augmented_images_bucket}
+
+        while True:
+            response = s3.list_objects_v2(**kwargs)
+
+            try:
+                objects = response["Contents"]
+                image_pointers.extend(objects)
+            except KeyError:
+                return
+
+            try:
+                kwargs["ContinuationToken"] = response["NextContinuationToken"]
+            except KeyError:
+                break
+
+        return image_pointers
+
+    def _download_one_file(self, s3_pointer):
+
+        download_directory = 'augmented_images'
+        config = boto3.session.Config(max_pool_connections=os.cpu_count() * 5)
+        s3 = boto3.client("s3", config=config)
+
+        image = s3.get_object(Bucket=self.augmented_images_bucket, Key=s3_pointer["Key"]).get("Body").read()
+        filename = "%s/%s" % (download_directory, s3_pointer.get("Key"))
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+        with open(filename, "wb") as fp:
+            fp.write(image)
+
+    def download_augmented_images(self):
+        image_pointers = self._download_augmented_images_pointers()
+
+        with ThreadPoolExecutor() as executor:
+            executor.map(self._download_one_file, image_pointers)
