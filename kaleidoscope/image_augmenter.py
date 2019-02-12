@@ -14,6 +14,7 @@ import constants
 import cv2
 import os
 import shutil
+import sys
 import transformations
 
 from itertools import takewhile
@@ -27,7 +28,7 @@ DESTINATION_S3 = os.environ["DESTINATION_S3"]
 
 
 class KaleidoscopeAugmenter(object):
-    def __init__(self, image, image_name, num_transformations):
+    def __init__(self, image, image_name, num_transformations, verbose=True):
         """
         Augments `image` by chaining together transformations. Saves to S3 bucket.
 
@@ -35,6 +36,8 @@ class KaleidoscopeAugmenter(object):
         :param image_name: filename of the original image
         :param num_transformations: how many transformations to chain for this image
         """
+        self._vprint = sys.stdout.write if verbose else lambda *a, **k: None
+
         self._image_name = image_name
 
         # normalize the original image size before transforming
@@ -167,7 +170,7 @@ class KaleidoscopeAugmenter(object):
             transform = self._transforms[name[-1:]]
 
             new_image = self._image.copy()
-            images[augmented_name] = transform(new_image, self._image_name)
+            images[augmented_name] = transform(new_image)
         return images
 
     def _save(self):
@@ -184,7 +187,7 @@ class KaleidoscopeAugmenter(object):
 
             # save locally
             cv2.imwrite(constants.TMP_SAVE_DIR + image_name, self._images[image_name])
-
+        self._vprint(f'saving to {DESTINATION_S3}')
         # TODO: Test using boto3 instead of a call the command line.
         os.system(
             "aws s3 cp "
