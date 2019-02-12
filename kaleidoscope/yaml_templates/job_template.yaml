@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: worker-bee
-        image: andrewasheridan/worker-bee:packaged-beta
+        image: andrewasheridan/worker-bee:packaged-charlie
         command:  ["python", "-u", "/worker.py"]
         env:
         - name: PYTHONUNBUFFERED
