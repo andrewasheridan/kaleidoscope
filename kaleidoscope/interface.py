@@ -65,6 +65,7 @@ class Interface(object):
         if not self._bucket_exists(self.kops_state_store_name):
             self._create_cluster_state_store()
 
+        self.create_image_buckets()
         # certain environment variables must be set by the user
         self._check_environmental_variables()
 
@@ -102,9 +103,7 @@ class Interface(object):
 
     @staticmethod
     def _create_bucket(bucket_name):
-        create = "aws s3api create-bucket --bucket "\
-                 + bucket_name\
-                 + " --region us-east-1"
+        create = f"aws s3api create-bucket --bucket {bucket_name} --region us-east-1"
 
         subprocess.run(create.split())
 
@@ -178,7 +177,7 @@ class Interface(object):
         output = self._pass_command_to_shell(command)
         if raw_output:
             print(output)
-        self._vprint(f"\rCluster deleted")
+        self._vprint("\rCluster deleted")
 
     def _configure_base_cluster(self):
         yaml_creation.create_secret_yaml()
@@ -190,32 +189,32 @@ class Interface(object):
 
     def _activate_secret(self):
         self._vprint("\rPlanting Secret")
-        command = f"kubectl create -f secret.yaml"
+        command = "kubectl create -f secret.yaml"
         self._pass_command_to_shell(command)
 
     def _activate_secret_store(self):
         self._vprint("\rCreating Secret")
-        command = f"kubectl create -f secret_store.yaml"
+        command = "kubectl create -f secret_store.yaml"
         self._pass_command_to_shell(command)
 
     def _activate_redis_service(self):
         self._vprint("\rCreating Redis Service")
-        command = f"kubectl create -f redis_service.yaml"
+        command = "kubectl create -f redis_service.yaml"
         self._pass_command_to_shell(command)
 
     def _activate_redis_master(self):
         self._vprint("\rStarting Redis Master")
-        command = f"kubectl create -f redis_master.yaml"
+        command = "kubectl create -f redis_master.yaml"
         self._pass_command_to_shell(command)
 
     def _activate_queue_maker(self):
         self._vprint("\rStarting Queue Maker")
-        command = f"kubectl create -f queue_maker.yaml"
+        command = "kubectl create -f queue_maker.yaml"
         self._pass_command_to_shell(command)
 
     def _activate_poll(self):
         self._vprint("\rStarting Poll")
-        command = f"kubectl create -f poll.yaml"
+        command = "kubectl create -f poll.yaml"
         self._pass_command_to_shell(command)
 
     def _activate_base_components(self):
@@ -270,7 +269,8 @@ class Interface(object):
             # if i % delay == 0:
             main = self._get_progress()
 
-            batch_size = 100
+            # TODO: Change 6 to num transformations
+            batch_size = 100 * 2**6
             if main:
                 sys.stdout.write("\r~{} original images remaining  {}".format(batch_size*(main+1), next(spinner)))
                 sys.stdout.flush()

@@ -31,7 +31,7 @@ class KaleidoscopeKeyScraper(object):
 
     def _add_s3_client(self):
         try:
-            if self._bucket_exists(self.bucket_name):
+            if self._bucket_exists():
                 return boto3.client("s3")
 
         # TODO: Make this less broad
