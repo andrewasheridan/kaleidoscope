@@ -1,4 +1,4 @@
-from . import _yaml_creation as yc
+from . import yaml_creation as yc
 
 
 def create_redis_service_yaml():

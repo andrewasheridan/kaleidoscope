@@ -1,4 +1,4 @@
-from . import _yaml_creation as yc
+from . import yaml_creation as yc
 
 
 def add_env_var_to_yaml(yaml, name, value):

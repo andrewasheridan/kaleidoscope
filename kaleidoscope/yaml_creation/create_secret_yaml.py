@@ -1,10 +1,10 @@
 import base64
 import os
 
-from . import _yaml_creation as yc
+from . import yaml_creation as yc
 
 
-def _add_aws_credentials_to_job(yaml):
+def _add_aws_credentials_to_cluster(yaml):
 
     try:
         key = base64.b64encode(os.environ["AWS_ACCESS_KEY_ID"].encode())
@@ -28,5 +28,5 @@ def _add_aws_credentials_to_job(yaml):
 
 def create_secret_yaml():
     secret_yaml = yc.load_yaml_template(path="yaml_templates/secret_template.yaml")
-    secret_yaml = _add_aws_credentials_to_job(secret_yaml)
+    secret_yaml = _add_aws_credentials_to_cluster(secret_yaml)
     yc.write_yaml_file(yaml=secret_yaml, path='secret.yaml')
