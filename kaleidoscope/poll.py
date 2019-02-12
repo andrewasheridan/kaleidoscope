@@ -9,14 +9,13 @@
  | |
  |_|
 """
+import constants
 import rediswq
 import time
 
-HOST = "redis"
-JOB_NAME = "job2"
 PRINT_DELAY = 5
 
-queue = rediswq.RedisWQ(name=JOB_NAME, host=HOST)
+queue = rediswq.RedisWQ(name=constants.JOB_NAME, host=constants.HOST)
 
 
 def poll(queue, print_delay):
