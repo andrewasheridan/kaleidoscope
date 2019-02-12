@@ -19,18 +19,19 @@ import rediswq
 
 from image_augmenter import KaleidoscopeAugmenter
 
-HOST = "redis"
-JOB_NAME = "job2"
+# HOST = "redis"
+# JOB_NAME = "job2"
 
 # This environmental variable is set in the Docker Container the script runs inside of.
 # It is set when the Pod is created with `kubectl create -f job.yaml` or during Interface().transform()
 ORIGIN_S3 = os.environ['ORIGIN_S3']
+AWS_DEFAULT_REGION = os.environ['AWS_DEFAULT_REGION']
 
-queue = rediswq.RedisWQ(name=JOB_NAME, host=HOST)
+queue = rediswq.RedisWQ(name=constants.JOB_NAME, host=constants.HOST)
 
 
 def worker(queue):
-    s3 = boto3.resource('s3', region_name=constants.AWS_REGION)
+    s3 = boto3.resource('s3', region_name=AWS_DEFAULT_REGION)
     origin_bucket = s3.Bucket(ORIGIN_S3)
 
     os.makedirs(os.path.dirname(constants.DOWNLOAD_DIRECTORY), exist_ok=True)
