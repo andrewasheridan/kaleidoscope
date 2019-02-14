@@ -1,4 +1,6 @@
-To build & push this container navigate to `kaleidoscope/` and do:
+**To build & push this container:**
+ 
+Navigate to `kaleidoscope/` and do:
 ```
 docker build -t [user-id/poll-container-name:tag] -f ../containers/poll/Dockerfile .
 docker push [user-id/poll-container-name:tag]
