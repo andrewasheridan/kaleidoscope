@@ -36,6 +36,7 @@ class KaleidoscopeAugmenter(object):
         :param image_name: filename of the original image
         :param num_transformations: how many transformations to chain for this image
         """
+
         self._vprint = sys.stdout.write if verbose else lambda *a, **k: None
 
         self._image_name = image_name
@@ -84,8 +85,9 @@ class KaleidoscopeAugmenter(object):
             transformations.rotate_and_zoom,
             transformations.adjust_contrast,
             transformations.adjust_brightness,
-            transformations.adjust_saturation,
+            # transformations.adjust_saturation,
             transformations.flip_left_right,
+            transformations.noisy,
             transformations.noisy,
         ]
         shuffle(possible_transforms)
@@ -162,15 +164,21 @@ class KaleidoscopeAugmenter(object):
         # keys = image names
         # values = transformed image
         images = {}
-
+        images[self._image_name] = self._image
         for augmented_name in self._aug_image_names:
             name, extension = augmented_name.split(".")
 
             # take the last character of `name` and use it as a key to get a transform
             transform = self._transforms[name[-1:]]
 
-            new_image = self._image.copy()
-            images[augmented_name] = transform(new_image)
+            key = name[:-1] + "." + extension
+            new_image = images[key]
+            # new_image = self._image.copy()
+            if new_image is not None:
+                images[augmented_name] = transform(new_image)
+            else:
+                print('new image was none.')
+                images[augmented_name] = self._image
         return images
 
     def _save(self):

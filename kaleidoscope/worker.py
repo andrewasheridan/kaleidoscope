@@ -31,19 +31,23 @@ queue = rediswq.RedisWQ(name=constants.JOB_NAME, host=constants.HOST)
 
 
 def worker(queue):
+
     s3 = boto3.resource('s3', region_name=AWS_DEFAULT_REGION)
     origin_bucket = s3.Bucket(ORIGIN_S3)
 
     os.makedirs(os.path.dirname(constants.DOWNLOAD_DIRECTORY), exist_ok=True)
 
     while not queue.empty():
-        item = queue.lease(lease_secs=10, block=True, timeout=2)
+
+        item = queue.lease(lease_secs=120, block=True, timeout=30)
 
         if item is not None:
             batch = pickle.loads(item)
 
+            num_times = len(batch)
             for i, key in enumerate(batch):
 
+                print(f"item {i} of {num_times}")
                 image_pointer = key["Key"]
                 download_path = constants.DOWNLOAD_DIRECTORY + image_pointer
                 os.makedirs(os.path.dirname(download_path), exist_ok=True)
@@ -55,10 +59,12 @@ def worker(queue):
                     raise ValueError('cv2 err')
 
                 # TODO: make the number of transformations settable in Interface()
-                auger = KaleidoscopeAugmenter(image, image_pointer, 6)
+                if image is not None:
+                    if image.size != 0:
+                        if image.shape[0] > 1 and image.shape[1] > 1:
+                            auger = KaleidoscopeAugmenter(image, image_pointer, 6)
                 # TODO: Add in calls to auger.transform, auger.save
             queue.complete(item)
-
         else:
             print("Waiting for work")
 

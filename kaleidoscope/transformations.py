@@ -64,6 +64,13 @@ def random_square_crop_with_resize(
             image_square = image_resized[
                 :, margin - rand_adjustment : -(margin + shift + rand_adjustment), :
             ]
+            try:
+                print(image.shape)
+                image_square = cv2.resize(
+                    image_square, (new_side_len, new_side_len), interpolation=interpolation
+                )
+            except Exception as e:
+                print(e)
 
     # FIXME: Code is repeated in both if conditions - abstract this
     elif width < height:
@@ -93,6 +100,13 @@ def random_square_crop_with_resize(
             image_square = image_resized[
                 margin - rand_adjustment : -(margin + shift + rand_adjustment), :, :
             ]
+            try:
+                print(image.shape)
+                image_square = cv2.resize(
+                    image_square, (new_side_len, new_side_len), interpolation=interpolation
+                )
+            except Exception as e:
+                print(e)
 
     else:
         # the image is already a square, just resize it
@@ -113,19 +127,20 @@ def rotate_and_zoom(image):
     side_len = image.shape[0]
     angle = random.randint(1, 359)
 
-    rotation_matrix = cv2.getRotationMatrix2D((side_len // 2, side_len // 2), angle, 1)
-    image = cv2.warpAffine(image, rotation_matrix, (side_len, side_len))
+    if image.shape[0] > 0 and image.shape[1] > 0:
+        rotation_matrix = cv2.getRotationMatrix2D((side_len // 2, side_len // 2), angle, 1)
+        image = cv2.warpAffine(image, rotation_matrix, (side_len, side_len))
 
-    # Given a square image and a fixed `frame` size, when you rotate the image there are areas that will have zeros.
-    # To hide the blank areas we zoom the image in, but how much?
-    # This formula was found empirically. I assume there is some nice geometry that can provide a better answer.
-    # (side length / 8) * sin func that maxes at 45 deg * 1.41 (~ square_root(2))
-    x = abs(int(side_len // 8 * np.sin(np.deg2rad(45 + angle // 45 + angle % 45)) * 1.41))
-    image = image[x:-x, x:-x, :]
-    # the image is now smaller than it should be, because we have cut out the zeroes area
+        # Given a square image and a fixed `frame` size, when you rotate the image there are areas that will have zeros.
+        # To hide the blank areas we zoom the image in, but how much?
+        # This formula was found empirically. I assume there is some nice geometry that can provide a better answer.
+        # (side length / 8) * sin func that maxes at 45 deg * 1.41 (~ square_root(2))
+        x = abs(int(side_len // 8 * np.sin(np.deg2rad(45 + angle // 45 + angle % 45)) * 1.41))
+        image = image[x:-x, x:-x, :]
+        # the image is now smaller than it should be, because we have cut out the zeroes area
 
-    # resize back to the original size
-    image = cv2.resize(image, (side_len, side_len), interpolation=cv2.INTER_LANCZOS4)
+        # resize back to the original size
+        image = cv2.resize(image, (side_len, side_len), interpolation=cv2.INTER_LANCZOS4)
 
     return image
 
