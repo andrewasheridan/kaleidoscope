@@ -3,7 +3,7 @@
 A distributed image augmentation pipeline developed as a Data Engineering Project for Insight Data Science.
 
 ## Description
-Kaleidoscope takes in an image dataset and applies a series of chained transformations to augment the dataset. 
+<font color="#d40f5e">kaleidoscope</font>  takes in an image dataset and applies a series of chained transformations to augment the dataset. 
 It performs these transformations in parallel using multiple replicated pods managed by Kubernetes, and saves the new images to an S3 bucket.
 
 ***
@@ -25,7 +25,7 @@ You decide to write a script that does the transformations ahead of time, but yo
 Running this script just wont cut it. 
 What if you could run multiple copies of the same script simultaneously, each on a subset of the dataset?
 
-That's what kaleidoscope does.
+That's what <font color="#d40f5e">kaleidoscope</font>  does.
 
 ### Details
 To do the necessary transformations we turn to OpenCV, an open source computer vision library. 
@@ -39,7 +39,7 @@ Given one image, and N transformations, 2^N images are generated.
 
 ### Installation
 
-Clone the kaleidoscope repo:
+Clone the <font color="#d40f5e">kaleidoscope</font>  repo:
 ```
 git clone https://github.com/andrewasheridan/kaleidoscope.git
 ```
@@ -66,7 +66,7 @@ numpy
 
 #### AWS Credentials
 
-An AWS account is needed to use `kaleidoscope`, and your AWS credentials must available as local environment variables.
+An AWS account is needed to use <font color="#d40f5e">kaleidoscope</font> , and your AWS credentials must available as local environment variables.
 
 in `~/.bash_profile` add:
 ```
